@@ -2,882 +2,788 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>San Valentín</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Dancing+Script:wght@600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Dancing+Script:wght@500;700&display=swap" rel="stylesheet">
 <style>
-  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
 
-  :root {
-    --red-deep: #8B0000;
-    --red-mid: #C0392B;
-    --red-light: #E57373;
-    --red-pale: #FFCDD2;
-    --bg: #FFF5F5;
-    --bark: #5D3A1A;
-    --bark-light: #8B5E3C;
-  }
+:root {
+  --r1:#6B0000; --r2:#B02020; --r3:#E05050; --r4:#F08080;
+  --bark1:#2E1505; --bark2:#5A3010; --bark3:#8B5A2B;
+  --bg:#FFF0F2;
+}
 
-  body {
-    background: var(--bg);
-    width: 100vw; height: 100vh;
-    overflow: hidden;
-    display: flex; align-items: center; justify-content: center;
-    font-family: 'Playfair Display', serif;
-  }
+html, body {
+  width:100%; height:100%; overflow:hidden;
+  background:var(--bg);
+  font-family:'Playfair Display',serif;
+  -webkit-tap-highlight-color:transparent;
+  user-select:none;
+}
 
-  /* ═══════════════════════════════ ESCENA 1: CORAZÓN ═══════════════════════════════ */
-  #scene1 {
-    position: absolute; inset: 0;
-    display: flex; flex-direction: column;
-    align-items: center; justify-content: center;
-    gap: 20px;
-  }
+.bg-layer {
+  position:fixed; inset:0; z-index:0;
+  background:
+    radial-gradient(ellipse 70% 60% at 20% 80%, #ffe0e5 0%, transparent 60%),
+    radial-gradient(ellipse 50% 40% at 80% 20%, #ffd6dc 0%, transparent 55%),
+    radial-gradient(ellipse 100% 100% at 50% 50%, #fff5f6 0%, #ffeaed 100%);
+}
 
-  .hint-text {
-    font-family: 'Dancing Script', cursive;
-    font-size: 1.4rem;
-    color: var(--red-mid);
-    opacity: 0;
-    animation: fadeInHint 1s 0.8s forwards;
-    letter-spacing: 0.05em;
-  }
+/* ══ ESCENAS ══ */
+.scene {
+  position:fixed; inset:0; z-index:1;
+  display:flex; align-items:center; justify-content:center;
+  opacity:0; pointer-events:none;
+  transition:opacity 0.7s ease;
+}
+.scene.active { opacity:1; pointer-events:all; }
 
-  @keyframes fadeInHint {
-    to { opacity: 1; }
-  }
+/* ══ ESCENA 1 ══ */
+#s1 { flex-direction:column; gap:clamp(12px,3vw,24px); }
 
-  #heart-btn {
-    background: none; border: none; cursor: pointer;
-    padding: 0; outline: none;
-    filter: drop-shadow(0 8px 24px rgba(192,57,43,0.35));
-    transition: filter 0.2s;
-    animation: heartbeat 1.4s ease-in-out infinite;
-  }
+.hint {
+  font-family:'Dancing Script',cursive;
+  font-size:clamp(1rem,4vw,1.5rem);
+  color:var(--r2);
+  opacity:0;
+  animation:fadeUp 1s 0.8s forwards;
+}
+@keyframes fadeUp {
+  from { opacity:0; transform:translateY(8px); }
+  to   { opacity:1; transform:translateY(0); }
+}
 
-  #heart-btn:hover {
-    filter: drop-shadow(0 12px 32px rgba(192,57,43,0.55));
-    animation: none;
-    transform: scale(1.08);
-  }
+#heart-btn {
+  background:none; border:none; cursor:pointer;
+  padding:0; outline:none;
+  filter:drop-shadow(0 8px 28px rgba(176,32,32,0.4));
+  animation:beat 1.5s ease-in-out infinite;
+  touch-action:manipulation;
+}
+#heart-btn:active { transform:scale(0.88)!important; animation:none!important; }
+@keyframes beat {
+  0%,100%{ transform:scale(1); }
+  15%    { transform:scale(1.12); }
+  30%    { transform:scale(1); }
+  45%    { transform:scale(1.08); }
+}
 
-  @keyframes heartbeat {
-    0%, 100% { transform: scale(1); }
-    14% { transform: scale(1.1); }
-    28% { transform: scale(1); }
-    42% { transform: scale(1.07); }
-    70% { transform: scale(1); }
-  }
+/* ══ ESCENA 2 ══ */
+#drop-heart {
+  position:absolute;
+  filter:drop-shadow(0 6px 18px rgba(176,32,32,0.5));
+}
 
-  .click-ring {
-    position: absolute;
-    width: 120px; height: 120px;
-    border: 3px solid var(--red-mid);
-    border-radius: 50%;
-    transform: scale(0); opacity: 0;
-    pointer-events: none;
-  }
+/* ══ ESCENA 3 ══ */
+#s3 { align-items:flex-end; justify-content:center; }
+#tree-stage {
+  width:min(440px,96vw); height:100vh;
+  position:relative;
+  display:flex; align-items:flex-end; justify-content:center;
+}
+#tree-main { width:100%; height:100%; overflow:visible; position:absolute; bottom:0; }
 
-  /* ═══════════════════════════════ ESCENA 2: CAÍDA ═══════════════════════════════ */
-  #scene2 {
-    position: absolute; inset: 0;
-    display: none;
-    align-items: center; justify-content: center;
-  }
+/* ══ ESCENA 4 ══ */
+#s4 { align-items:flex-end; justify-content:center; }
+#s4-inner { width:100%; height:100%; position:relative; display:flex; align-items:flex-end; justify-content:flex-end; }
 
-  #falling-heart {
-    position: absolute;
-    top: 35%; left: 50%;
-    transform: translateX(-50%);
-    width: 90px; height: 90px;
-    will-change: transform, opacity;
-  }
+#tree-side {
+  width:min(330px,58vw); height:100vh;
+  position:absolute; right:0; bottom:0;
+  transform:translateX(105%);
+  transition:transform 1.4s cubic-bezier(0.16,1,0.3,1);
+}
+#tree-side.in { transform:translateX(0); }
+#tree-side svg { width:100%; height:100%; overflow:visible; }
 
-  #impact-wave {
-    position: absolute;
-    bottom: 28%; left: 50%;
-    transform: translateX(-50%) scaleX(0);
-    width: 80px; height: 18px;
-    background: radial-gradient(ellipse, rgba(192,57,43,0.35) 0%, transparent 70%);
-    border-radius: 50%;
-    opacity: 0;
-  }
+#counter-wrap {
+  position:absolute;
+  left:clamp(14px,5vw,48px); top:50%;
+  transform:translateY(-50%);
+  opacity:0; transition:opacity 1s 1.5s;
+}
+#counter-wrap.in { opacity:1; }
 
-  #ground-line {
-    position: absolute;
-    bottom: 28%; left: 0; right: 0;
-    height: 2px;
-    background: linear-gradient(90deg, transparent, var(--red-pale), var(--red-mid), var(--red-pale), transparent);
-    opacity: 0;
-  }
+.cnt-intro {
+  font-family:'Dancing Script',cursive;
+  font-size:clamp(0.85rem,3.2vw,1.15rem);
+  color:var(--r2); display:block; margin-bottom:6px;
+}
+.cnt-name {
+  font-family:'Dancing Script',cursive;
+  font-size:clamp(1.6rem,7vw,2.4rem);
+  color:var(--r1); display:block; line-height:1.1;
+  margin-bottom:clamp(12px,3vw,22px);
+}
+.time-row { display:flex; gap:clamp(8px,2.5vw,18px); align-items:flex-end; }
+.tu { text-align:center; }
+.tv {
+  display:block;
+  font-family:'Playfair Display',serif; font-weight:700;
+  font-size:clamp(2rem,8vw,3rem); color:var(--r1); line-height:1; min-width:2ch;
+}
+.tl {
+  font-family:'Dancing Script',cursive;
+  font-size:clamp(0.65rem,2.5vw,0.85rem);
+  color:var(--r2); letter-spacing:0.06em;
+}
 
-  /* ═══════════════════════════════ ESCENA 3: ÁRBOL ═══════════════════════════════ */
-  #scene3 {
-    position: absolute; inset: 0;
-    display: none;
-    align-items: flex-end; justify-content: center;
-  }
+/* ══ HOJAS CAYENDO ══ */
+.fl {
+  position:fixed; pointer-events:none; z-index:20;
+  will-change:transform,opacity;
+  animation:fall linear forwards;
+}
+@keyframes fall {
+  0%   { transform:translate(0,0) rotate(0deg); opacity:1; }
+  85%  { opacity:0.85; }
+  100% { transform:translate(var(--dx),var(--dy)) rotate(var(--dr)); opacity:0; }
+}
 
-  #tree-wrap {
-    position: relative;
-    width: 340px; height: 90vh;
-    display: flex; align-items: flex-end; justify-content: center;
-  }
+/* ══ RESTART ══ */
+#restart {
+  position:fixed; bottom:clamp(16px,4vw,28px); right:clamp(16px,4vw,28px);
+  z-index:50;
+  background:var(--r2); color:#fff; border:none; border-radius:50px;
+  padding:clamp(8px,2vw,12px) clamp(18px,4vw,26px);
+  font-family:'Dancing Script',cursive;
+  font-size:clamp(0.9rem,3.5vw,1.1rem);
+  cursor:pointer; opacity:0; pointer-events:none;
+  transition:opacity 0.5s, transform 0.15s;
+  box-shadow:0 4px 18px rgba(176,32,32,0.35);
+  touch-action:manipulation;
+}
+#restart.in { opacity:1; pointer-events:all; }
+#restart:active { transform:scale(0.94); }
 
-  #tree-svg {
-    width: 100%; height: 100%;
-    overflow: visible;
-  }
-
-  /* Ramas crecen con clip-path animado */
-  .trunk { stroke-dasharray: 600; stroke-dashoffset: 600; }
-  .branch { stroke-dasharray: 300; stroke-dashoffset: 300; }
-
-  /* ═══════════════════════════════ ESCENA 4: ÁRBOL DERECHA + CONTADOR ═══════════════════════════════ */
-  #scene4 {
-    position: absolute; inset: 0;
-    display: none;
-  }
-
-  #tree-right {
-    position: absolute;
-    right: -20px; bottom: 0;
-    width: 260px; height: 80vh;
-    transform: translateX(100%);
-    transition: transform 1.2s cubic-bezier(0.23, 1, 0.32, 1);
-  }
-
-  #tree-right.visible { transform: translateX(0); }
-
-  #counter-panel {
-    position: absolute;
-    left: 40px; top: 50%;
-    transform: translateY(-50%);
-    opacity: 0;
-    transition: opacity 1s 1.2s;
-  }
-
-  #counter-panel.visible { opacity: 1; }
-
-  .counter-label {
-    font-family: 'Dancing Script', cursive;
-    font-size: 1.2rem;
-    color: var(--red-mid);
-    margin-bottom: 8px;
-    display: block;
-  }
-
-  .counter-name {
-    font-family: 'Dancing Script', cursive;
-    font-size: 2.2rem;
-    color: var(--red-deep);
-    line-height: 1;
-    margin-bottom: 18px;
-    display: block;
-  }
-
-  .time-row {
-    display: flex; gap: 14px; flex-wrap: wrap;
-  }
-
-  .time-unit {
-    text-align: center;
-  }
-
-  .time-val {
-    display: block;
-    font-family: 'Playfair Display', serif;
-    font-size: 2.6rem;
-    font-weight: 700;
-    color: var(--red-deep);
-    line-height: 1;
-    min-width: 2.4ch;
-  }
-
-  .time-lbl {
-    font-family: 'Dancing Script', cursive;
-    font-size: 0.8rem;
-    color: var(--red-mid);
-    letter-spacing: 0.08em;
-    text-transform: lowercase;
-  }
-
-  /* ═══════════════════════════════ HOJAS CAYENDO ═══════════════════════════════ */
-  .leaf-fall {
-    position: fixed;
-    pointer-events: none;
-    will-change: transform, opacity;
-    animation: leafFall linear forwards;
-  }
-
-  @keyframes leafFall {
-    0% { transform: translateY(0) rotate(0deg) scale(1); opacity: 1; }
-    80% { opacity: 0.9; }
-    100% { transform: translateY(var(--fall-dist)) rotate(var(--fall-rot)) scale(0.7) translateX(var(--drift)); opacity: 0; }
-  }
-
-  /* ═══════════════════════════════ PARTÍCULAS IMPACTO ═══════════════════════════════ */
-  .particle {
-    position: absolute;
-    width: 8px; height: 8px;
-    border-radius: 50%;
-    background: var(--red-mid);
-    pointer-events: none;
-  }
-
-  /* ═══════════════════════════════ BG GRADIENT ═══════════════════════════════ */
-  .bg-gradient {
-    position: fixed; inset: 0; z-index: -1;
-    background: radial-gradient(ellipse at 30% 60%, #ffe0e3 0%, #fff5f5 60%, #ffeef0 100%);
-  }
-
-  /* ═══════════════════════════════ BOTÓN REINICIAR ═══════════════════════════════ */
-  #restart-btn {
-    position: fixed; bottom: 30px; right: 30px;
-    background: var(--red-mid); color: #fff;
-    border: none; border-radius: 50px;
-    padding: 10px 22px;
-    font-family: 'Dancing Script', cursive;
-    font-size: 1rem;
-    cursor: pointer;
-    opacity: 0;
-    transition: opacity 0.5s, transform 0.2s;
-    z-index: 100;
-    box-shadow: 0 4px 16px rgba(192,57,43,0.3);
-  }
-
-  #restart-btn:hover { transform: scale(1.06); }
-  #restart-btn.visible { opacity: 1; }
+#ground {
+  position:fixed; bottom:28%; left:0; right:0; height:2px; z-index:5;
+  background:linear-gradient(90deg,transparent 0%,var(--r4) 30%,var(--r2) 50%,var(--r4) 70%,transparent 100%);
+  opacity:0; transform:scaleX(0); transform-origin:center;
+  transition:opacity 0.3s, transform 0.5s cubic-bezier(0.2,0.8,0.4,1);
+}
 </style>
 </head>
 <body>
+<div class="bg-layer"></div>
+<div id="ground"></div>
 
-<div class="bg-gradient"></div>
-
-<!-- ═══ ESCENA 1: CORAZÓN ═══ -->
-<div id="scene1">
-  <p class="hint-text">Presiona el corazón ♥</p>
-  <div style="position:relative; display:flex; align-items:center; justify-content:center;">
-    <div class="click-ring" id="ring1"></div>
-    <div class="click-ring" id="ring2" style="animation-delay:0.2s"></div>
-    <button id="heart-btn" aria-label="Corazón San Valentín">
-      <svg width="130" height="120" viewBox="0 0 130 120" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <radialGradient id="hg" cx="40%" cy="30%" r="70%">
-            <stop offset="0%" stop-color="#E74C3C"/>
-            <stop offset="60%" stop-color="#C0392B"/>
-            <stop offset="100%" stop-color="#8B0000"/>
-          </radialGradient>
-          <filter id="hglow">
-            <feGaussianBlur stdDeviation="4" result="blur"/>
-            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
-          </filter>
-        </defs>
-        <path d="M65 108 C65 108 8 70 8 36 C8 18 22 6 40 6 C50 6 60 12 65 20 C70 12 80 6 90 6 C108 6 122 18 122 36 C122 70 65 108 65 108Z"
-              fill="url(#hg)" filter="url(#hglow)"/>
-        <!-- Brillo -->
-        <ellipse cx="45" cy="32" rx="16" ry="10" fill="rgba(255,255,255,0.25)" transform="rotate(-25 45 32)"/>
-        <!-- Detalles líneas de destello -->
-        <line x1="20" y1="15" x2="28" y2="10" stroke="rgba(255,200,200,0.7)" stroke-width="2" stroke-linecap="round"/>
-        <line x1="15" y1="25" x2="10" y2="22" stroke="rgba(255,200,200,0.6)" stroke-width="1.5" stroke-linecap="round"/>
-        <line x1="22" y1="10" x2="18" y2="4" stroke="rgba(255,200,200,0.5)" stroke-width="1.5" stroke-linecap="round"/>
-      </svg>
-    </button>
-  </div>
+<!-- ══ ESCENA 1 ══ -->
+<div class="scene active" id="s1">
+  <p class="hint">Toca el corazón ♥</p>
+  <button id="heart-btn" aria-label="Corazón">
+    <svg style="width:clamp(110px,28vw,145px);height:auto" viewBox="0 0 140 130" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <radialGradient id="hg" cx="38%" cy="28%" r="72%">
+          <stop offset="0%"  stop-color="#FF6B6B"/>
+          <stop offset="45%" stop-color="#C0392B"/>
+          <stop offset="100%" stop-color="#7B0000"/>
+        </radialGradient>
+        <filter id="hf" x="-20%" y="-20%" width="140%" height="140%">
+          <feGaussianBlur stdDeviation="3" result="b"/>
+          <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+      </defs>
+      <path d="M70 118C70 118 8 76 8 38C8 19 23 6 42 6C53 6 63 12 70 22C77 12 87 6 98 6C117 6 132 19 132 38C132 76 70 118 70 118Z"
+            fill="url(#hg)" filter="url(#hf)"/>
+      <ellipse cx="48" cy="34" rx="17" ry="11" fill="rgba(255,255,255,0.28)" transform="rotate(-28 48 34)"/>
+      <ellipse cx="38" cy="26" rx="7"  ry="5"  fill="rgba(255,255,255,0.18)" transform="rotate(-28 38 26)"/>
+      <line x1="22" y1="16" x2="30" y2="10" stroke="rgba(255,210,210,0.8)" stroke-width="2"   stroke-linecap="round"/>
+      <line x1="16" y1="28" x2="10" y2="24" stroke="rgba(255,210,210,0.7)" stroke-width="1.5" stroke-linecap="round"/>
+      <line x1="25" y1="10" x2="20"  y2="4" stroke="rgba(255,210,210,0.6)" stroke-width="1.5" stroke-linecap="round"/>
+    </svg>
+  </button>
 </div>
 
-<!-- ═══ ESCENA 2: CAÍDA ═══ -->
-<div id="scene2">
-  <svg id="falling-heart" viewBox="0 0 130 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+<!-- ══ ESCENA 2 ══ -->
+<div class="scene" id="s2">
+  <svg id="drop-heart" style="width:clamp(70px,20vw,100px)" viewBox="0 0 140 130" xmlns="http://www.w3.org/2000/svg">
     <defs>
-      <radialGradient id="hg2" cx="40%" cy="30%" r="70%">
-        <stop offset="0%" stop-color="#E74C3C"/>
-        <stop offset="100%" stop-color="#8B0000"/>
+      <radialGradient id="hg2" cx="38%" cy="28%" r="72%">
+        <stop offset="0%"  stop-color="#FF6B6B"/>
+        <stop offset="45%" stop-color="#C0392B"/>
+        <stop offset="100%" stop-color="#7B0000"/>
       </radialGradient>
     </defs>
-    <path id="falling-path"
-      d="M65 108 C65 108 8 70 8 36 C8 18 22 6 40 6 C50 6 60 12 65 20 C70 12 80 6 90 6 C108 6 122 18 122 36 C122 70 65 108 65 108Z"
-      fill="url(#hg2)"/>
-    <ellipse cx="45" cy="32" rx="16" ry="10" fill="rgba(255,255,255,0.22)" transform="rotate(-25 45 32)"/>
+    <path d="M70 118C70 118 8 76 8 38C8 19 23 6 42 6C53 6 63 12 70 22C77 12 87 6 98 6C117 6 132 19 132 38C132 76 70 118 70 118Z"
+          fill="url(#hg2)"/>
+    <ellipse cx="48" cy="34" rx="17" ry="11" fill="rgba(255,255,255,0.25)" transform="rotate(-28 48 34)"/>
   </svg>
-  <div id="impact-wave"></div>
-  <div id="ground-line"></div>
 </div>
 
-<!-- ═══ ESCENA 3: ÁRBOL EMERGIENDO ═══ -->
-<div id="scene3">
-  <div id="tree-wrap">
-    <svg id="tree-svg" viewBox="0 0 340 700" xmlns="http://www.w3.org/2000/svg" overflow="visible">
+<!-- ══ ESCENA 3 (árbol con hojas generadas por JS) ══ -->
+<div class="scene" id="s3">
+  <div id="tree-stage">
+    <svg id="tree-main" viewBox="0 0 440 740" xmlns="http://www.w3.org/2000/svg" overflow="visible">
       <defs>
-        <radialGradient id="bg1" cx="50%" cy="50%" r="50%">
-          <stop offset="0%" stop-color="#A52A2A"/>
-          <stop offset="100%" stop-color="#5D3A1A"/>
-        </radialGradient>
-        <!-- Corazón símbolo para hojas -->
-        <symbol id="leaf-heart" viewBox="0 0 20 18">
-          <path d="M10 16 C10 16 1 10 1 5 C1 2.2 3.2 0 6 0 C7.6 0 9 0.9 10 2.1 C11 0.9 12.4 0 14 0 C16.8 0 19 2.2 19 5 C19 10 10 16 10 16Z"/>
+        <linearGradient id="tG" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%"   stop-color="#2E1505"/>
+          <stop offset="30%"  stop-color="#5A3010"/>
+          <stop offset="65%"  stop-color="#8B5A2B"/>
+          <stop offset="100%" stop-color="#3A1F05"/>
+        </linearGradient>
+        <linearGradient id="bG" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%"   stop-color="#4A2A0A"/>
+          <stop offset="100%" stop-color="#9B6A30"/>
+        </linearGradient>
+        <!-- Hoja-corazón bien definida -->
+        <symbol id="LH" viewBox="-1 -1 22 20" overflow="visible">
+          <path d="M10 17C10 17 0.5 10.5 0.5 5.2C0.5 2.3 2.8 0 5.8 0C7.5 0 9 0.85 10 2.1C11 0.85 12.5 0 14.2 0C17.2 0 19.5 2.3 19.5 5.2C19.5 10.5 10 17 10 17Z"/>
         </symbol>
       </defs>
 
-      <!-- TRONCO (crece de abajo arriba) -->
-      <line class="trunk" id="trunk" x1="170" y1="700" x2="170" y2="400"
-        stroke="url(#bg1)" stroke-width="28" stroke-linecap="round"/>
+      <!-- ══ TRONCO volumétrico ══ -->
+      <!-- Sombra lateral -->
+      <path class="tp" d="M228 740C226 700 224 650 222 595C220 540 218 485 217 435C216 390 215 350 214 310C213 272 211 240 210 208"
+            stroke="#1A0A02" stroke-width="24" fill="none" stroke-linecap="round"
+            style="stroke-dasharray:700;stroke-dashoffset:700"/>
+      <!-- Tronco principal -->
+      <path class="tp" d="M220 740C218 700 216 650 214 595C212 540 210 485 209 435C208 390 207 350 206 310C205 272 203 240 202 208"
+            stroke="url(#tG)" stroke-width="34" fill="none" stroke-linecap="round"
+            style="stroke-dasharray:700;stroke-dashoffset:700"/>
+      <!-- Brillo izquierdo -->
+      <path class="tp" d="M212 740C210 700 208 650 207 595C206 540 204 485 204 435C203 390 202 350 201 310C200 272 199 240 198 208"
+            stroke="#9B6A30" stroke-width="9" fill="none" stroke-linecap="round" opacity="0.4"
+            style="stroke-dasharray:700;stroke-dashoffset:700"/>
 
-      <!-- RAMAS PRINCIPALES (8 ramas) -->
-      <!-- Izquierda abajo -->
-      <line class="branch" x1="170" y1="550" x2="80" y2="460"  stroke="#7B4A22" stroke-width="14" stroke-linecap="round"/>
-      <!-- Derecha abajo -->
-      <line class="branch" x1="170" y1="530" x2="265" y2="450" stroke="#7B4A22" stroke-width="14" stroke-linecap="round"/>
-      <!-- Izquierda media -->
-      <line class="branch" x1="170" y1="490" x2="70" y2="385"  stroke="#8B5E3C" stroke-width="11" stroke-linecap="round"/>
-      <!-- Derecha media -->
-      <line class="branch" x1="170" y1="475" x2="275" y2="380" stroke="#8B5E3C" stroke-width="11" stroke-linecap="round"/>
-      <!-- Izquierda arriba -->
-      <line class="branch" x1="170" y1="440" x2="95" y2="325"  stroke="#9B6E4C" stroke-width="8"  stroke-linecap="round"/>
-      <!-- Derecha arriba -->
-      <line class="branch" x1="170" y1="430" x2="248" y2="320" stroke="#9B6E4C" stroke-width="8"  stroke-linecap="round"/>
-      <!-- Centro izquierda alta -->
-      <line class="branch" x1="170" y1="410" x2="130" y2="280" stroke="#AB7E5C" stroke-width="6"  stroke-linecap="round"/>
-      <!-- Centro derecha alta -->
-      <line class="branch" x1="170" y1="400" x2="215" y2="280" stroke="#AB7E5C" stroke-width="6"  stroke-linecap="round"/>
+      <!-- Raíces -->
+      <path class="tp" d="M218 740C205 730 185 738 168 736" stroke="#2E1505" stroke-width="12" fill="none" stroke-linecap="round" style="stroke-dasharray:100;stroke-dashoffset:100"/>
+      <path class="tp" d="M222 740C236 732 256 738 272 736" stroke="#2E1505" stroke-width="10" fill="none" stroke-linecap="round" style="stroke-dasharray:100;stroke-dashoffset:100"/>
+      <path class="tp" d="M220 740C210 734 195 740 182 738" stroke="#3A1F05" stroke-width="7"  fill="none" stroke-linecap="round" style="stroke-dasharray:80;stroke-dashoffset:80"/>
 
-      <!-- Ramitas secundarias -->
-      <line class="branch" x1="80"  y1="460" x2="48"  y2="400" stroke="#9B6E4C" stroke-width="5" stroke-linecap="round"/>
-      <line class="branch" x1="80"  y1="460" x2="110" y2="405" stroke="#9B6E4C" stroke-width="5" stroke-linecap="round"/>
-      <line class="branch" x1="265" y1="450" x2="295" y2="398" stroke="#9B6E4C" stroke-width="5" stroke-linecap="round"/>
-      <line class="branch" x1="265" y1="450" x2="238" y2="400" stroke="#9B6E4C" stroke-width="5" stroke-linecap="round"/>
-      <line class="branch" x1="70"  y1="385" x2="38"  y2="330" stroke="#AB7E5C" stroke-width="4" stroke-linecap="round"/>
-      <line class="branch" x1="275" y1="380" x2="308" y2="325" stroke="#AB7E5C" stroke-width="4" stroke-linecap="round"/>
-      <line class="branch" x1="95"  y1="325" x2="65"  y2="270" stroke="#BB8E6C" stroke-width="3" stroke-linecap="round"/>
-      <line class="branch" x1="248" y1="320" x2="278" y2="268" stroke="#BB8E6C" stroke-width="3" stroke-linecap="round"/>
-      <line class="branch" x1="130" y1="280" x2="108" y2="230" stroke="#BB8E6C" stroke-width="3" stroke-linecap="round"/>
-      <line class="branch" x1="215" y1="280" x2="238" y2="228" stroke="#BB8E6C" stroke-width="3" stroke-linecap="round"/>
-      <line class="branch" x1="170" y1="400" x2="170" y2="260" stroke="#9B6E4C" stroke-width="6"  stroke-linecap="round"/>
-      <line class="branch" x1="170" y1="260" x2="155" y2="210" stroke="#BB8E6C" stroke-width="3" stroke-linecap="round"/>
-      <line class="branch" x1="170" y1="260" x2="188" y2="210" stroke="#BB8E6C" stroke-width="3" stroke-linecap="round"/>
+      <!-- ══ RAMAS (paths curvados = orgánicos) ══ -->
+      <!-- Nivel 1 – muy gruesas -->
+      <path class="br" d="M210 590C192 570 168 550 138 530C118 516 94 504 66 492"
+            stroke="#4A2A0A" stroke-width="20" fill="none" stroke-linecap="round" style="stroke-dasharray:220;stroke-dashoffset:220"/>
+      <path class="br" d="M214 578C234 558 260 540 288 524C310 510 334 500 360 490"
+            stroke="#4A2A0A" stroke-width="20" fill="none" stroke-linecap="round" style="stroke-dasharray:220;stroke-dashoffset:220"/>
 
-      <!-- HOJAS (corazones) - grupo oculto inicialmente -->
-      <g id="leaves-group" opacity="0">
-        <!-- Tonos: rojo oscuro #8B0000, rojo medio #C0392B, rojo claro #E57373 -->
-        <!-- Distribuidas por el árbol -->
-        <!-- Ramas bajas izquierda -->
-        <use href="#leaf-heart" x="34"  y="388" width="24" height="22" fill="#8B0000" transform="rotate(-15,46,399)"/>
-        <use href="#leaf-heart" x="52"  y="376" width="20" height="18" fill="#C0392B" transform="rotate(10,62,385)"/>
-        <use href="#leaf-heart" x="42"  y="402" width="18" height="16" fill="#E57373" transform="rotate(-5,51,410)"/>
-        <use href="#leaf-heart" x="95"  y="393" width="22" height="20" fill="#C0392B" transform="rotate(20,106,403)"/>
-        <use href="#leaf-heart" x="108" y="380" width="19" height="17" fill="#8B0000" transform="rotate(-10,117,388)"/>
+      <!-- Nivel 2 – gruesas -->
+      <path class="br" d="M208 500C188 480 162 460 132 444C110 430 86 420 58 410"
+            stroke="#5A3010" stroke-width="15" fill="none" stroke-linecap="round" style="stroke-dasharray:220;stroke-dashoffset:220"/>
+      <path class="br" d="M212 490C230 470 255 452 280 436C302 422 326 412 352 404"
+            stroke="#5A3010" stroke-width="15" fill="none" stroke-linecap="round" style="stroke-dasharray:220;stroke-dashoffset:220"/>
 
-        <!-- Ramas bajas derecha -->
-        <use href="#leaf-heart" x="282" y="385" width="24" height="22" fill="#C0392B" transform="rotate(12,294,396)"/>
-        <use href="#leaf-heart" x="298" y="398" width="20" height="18" fill="#8B0000" transform="rotate(-8,308,407)"/>
-        <use href="#leaf-heart" x="270" y="373" width="18" height="16" fill="#E57373" transform="rotate(5,279,381)"/>
-        <use href="#leaf-heart" x="228" y="385" width="22" height="20" fill="#8B0000" transform="rotate(-18,239,395)"/>
-        <use href="#leaf-heart" x="240" y="370" width="20" height="18" fill="#C0392B" transform="rotate(15,250,379)"/>
+      <!-- Nivel 3 – medias -->
+      <path class="br" d="M205 415C186 394 160 372 130 356C108 342 82 330 54 320"
+            stroke="#6B3F15" stroke-width="11" fill="none" stroke-linecap="round" style="stroke-dasharray:220;stroke-dashoffset:220"/>
+      <path class="br" d="M210 404C228 383 252 362 276 346C298 332 322 320 348 310"
+            stroke="#6B3F15" stroke-width="11" fill="none" stroke-linecap="round" style="stroke-dasharray:220;stroke-dashoffset:220"/>
 
-        <!-- Ramas medias izquierda -->
-        <use href="#leaf-heart" x="24"  y="318" width="26" height="24" fill="#C0392B" transform="rotate(-12,37,330)"/>
-        <use href="#leaf-heart" x="44"  y="305" width="22" height="20" fill="#8B0000" transform="rotate(8,55,315)"/>
-        <use href="#leaf-heart" x="36"  y="330" width="18" height="16" fill="#E57373" transform="rotate(-3,45,338)"/>
-        <use href="#leaf-heart" x="55"  y="340" width="20" height="18" fill="#C0392B" transform="rotate(22,65,349)"/>
+      <!-- Centro sube vertical -->
+      <path class="br" d="M206 360C204 338 202 312 200 284C198 258 196 236 194 210"
+            stroke="#5A3010" stroke-width="13" fill="none" stroke-linecap="round" style="stroke-dasharray:200;stroke-dashoffset:200"/>
 
-        <!-- Ramas medias derecha -->
-        <use href="#leaf-heart" x="292" y="312" width="26" height="24" fill="#8B0000" transform="rotate(10,305,324)"/>
-        <use href="#leaf-heart" x="308" y="298" width="22" height="20" fill="#E57373" transform="rotate(-14,319,308)"/>
-        <use href="#leaf-heart" x="278" y="330" width="20" height="18" fill="#C0392B" transform="rotate(6,288,339)"/>
-        <use href="#leaf-heart" x="262" y="345" width="18" height="16" fill="#8B0000" transform="rotate(-20,271,353)"/>
+      <!-- Nivel 4 – delgadas -->
+      <path class="br" d="M202 335C182 312 156 290 126 274C104 260 78 248 50 238"
+            stroke="#7B4F22" stroke-width="8" fill="none" stroke-linecap="round" style="stroke-dasharray:200;stroke-dashoffset:200"/>
+      <path class="br" d="M208 324C226 302 250 280 272 264C294 250 318 238 344 228"
+            stroke="#7B4F22" stroke-width="8" fill="none" stroke-linecap="round" style="stroke-dasharray:200;stroke-dashoffset:200"/>
 
-        <!-- Ramas altas izquierda -->
-        <use href="#leaf-heart" x="50"  y="258" width="28" height="26" fill="#C0392B" transform="rotate(-8,64,271)"/>
-        <use href="#leaf-heart" x="68"  y="242" width="24" height="22" fill="#8B0000" transform="rotate(16,80,253)"/>
-        <use href="#leaf-heart" x="40"  y="272" width="20" height="18" fill="#E57373" transform="rotate(-20,50,281)"/>
-        <use href="#leaf-heart" x="80"  y="262" width="22" height="20" fill="#C0392B" transform="rotate(5,91,272)"/>
+      <!-- Sub-ramas izquierda baja -->
+      <path class="br" d="M66 492C50 476 32 460 16 444" stroke="#6B3F15" stroke-width="9" fill="none" stroke-linecap="round" style="stroke-dasharray:100;stroke-dashoffset:100"/>
+      <path class="br" d="M66 492C74 472 88 456 106 444" stroke="#6B3F15" stroke-width="9" fill="none" stroke-linecap="round" style="stroke-dasharray:100;stroke-dashoffset:100"/>
+      <path class="br" d="M58 410C42 392 24 376 8 360"   stroke="#7B4F22" stroke-width="7" fill="none" stroke-linecap="round" style="stroke-dasharray:80;stroke-dashoffset:80"/>
+      <path class="br" d="M58 410C68 392 82 376 100 366" stroke="#7B4F22" stroke-width="7" fill="none" stroke-linecap="round" style="stroke-dasharray:80;stroke-dashoffset:80"/>
+      <path class="br" d="M54 320C38 302 20 284 4 268"   stroke="#8B5F2A" stroke-width="5" fill="none" stroke-linecap="round" style="stroke-dasharray:80;stroke-dashoffset:80"/>
+      <path class="br" d="M54 320C66 302 82 285 102 275" stroke="#8B5F2A" stroke-width="5" fill="none" stroke-linecap="round" style="stroke-dasharray:80;stroke-dashoffset:80"/>
+      <path class="br" d="M50 238C34 220 16 202 2 184"   stroke="#9B6F3A" stroke-width="4" fill="none" stroke-linecap="round" style="stroke-dasharray:80;stroke-dashoffset:80"/>
+      <path class="br" d="M50 238C64 220 82 204 102 192" stroke="#9B6F3A" stroke-width="4" fill="none" stroke-linecap="round" style="stroke-dasharray:80;stroke-dashoffset:80"/>
 
-        <!-- Ramas altas derecha -->
-        <use href="#leaf-heart" x="262" y="252" width="28" height="26" fill="#E57373" transform="rotate(12,276,265)"/>
-        <use href="#leaf-heart" x="246" y="268" width="24" height="22" fill="#C0392B" transform="rotate(-10,258,279)"/>
-        <use href="#leaf-heart" x="278" y="238" width="20" height="18" fill="#8B0000" transform="rotate(22,288,247)"/>
-        <use href="#leaf-heart" x="255" y="284" width="18" height="16" fill="#C0392B" transform="rotate(-5,264,292)"/>
+      <!-- Sub-ramas derecha baja -->
+      <path class="br" d="M360 490C376 474 392 458 408 444" stroke="#6B3F15" stroke-width="9" fill="none" stroke-linecap="round" style="stroke-dasharray:100;stroke-dashoffset:100"/>
+      <path class="br" d="M360 490C350 472 336 456 318 444" stroke="#6B3F15" stroke-width="9" fill="none" stroke-linecap="round" style="stroke-dasharray:100;stroke-dashoffset:100"/>
+      <path class="br" d="M352 404C368 386 384 370 400 356" stroke="#7B4F22" stroke-width="7" fill="none" stroke-linecap="round" style="stroke-dasharray:80;stroke-dashoffset:80"/>
+      <path class="br" d="M352 404C340 386 326 370 308 360" stroke="#7B4F22" stroke-width="7" fill="none" stroke-linecap="round" style="stroke-dasharray:80;stroke-dashoffset:80"/>
+      <path class="br" d="M348 310C364 292 382 274 398 258" stroke="#8B5F2A" stroke-width="5" fill="none" stroke-linecap="round" style="stroke-dasharray:80;stroke-dashoffset:80"/>
+      <path class="br" d="M348 310C336 292 320 276 300 266" stroke="#8B5F2A" stroke-width="5" fill="none" stroke-linecap="round" style="stroke-dasharray:80;stroke-dashoffset:80"/>
+      <path class="br" d="M344 228C360 210 378 192 394 174" stroke="#9B6F3A" stroke-width="4" fill="none" stroke-linecap="round" style="stroke-dasharray:80;stroke-dashoffset:80"/>
+      <path class="br" d="M344 228C330 210 314 194 296 182" stroke="#9B6F3A" stroke-width="4" fill="none" stroke-linecap="round" style="stroke-dasharray:80;stroke-dashoffset:80"/>
 
-        <!-- Ramas superiores -->
-        <use href="#leaf-heart" x="92"  y="218" width="30" height="28" fill="#8B0000" transform="rotate(-14,107,232)"/>
-        <use href="#leaf-heart" x="112" y="206" width="26" height="24" fill="#E57373" transform="rotate(8,125,218)"/>
-        <use href="#leaf-heart" x="98"  y="234" width="22" height="20" fill="#C0392B" transform="rotate(-22,109,244)"/>
+      <!-- Cima del árbol -->
+      <path class="br" d="M194 210C188 192 180 172 174 150C168 130 164 110 162 88"
+            stroke="#6B3F15" stroke-width="9" fill="none" stroke-linecap="round" style="stroke-dasharray:160;stroke-dashoffset:160"/>
+      <path class="br" d="M194 210C206 192 220 174 230 156" stroke="#7B4F22" stroke-width="5" fill="none" stroke-linecap="round" style="stroke-dasharray:80;stroke-dashoffset:80"/>
+      <path class="br" d="M194 210C180 192 166 174 154 156" stroke="#7B4F22" stroke-width="5" fill="none" stroke-linecap="round" style="stroke-dasharray:80;stroke-dashoffset:80"/>
+      <path class="br" d="M162 88C156 70 150 52 148 34"    stroke="#8B5F2A" stroke-width="5" fill="none" stroke-linecap="round" style="stroke-dasharray:80;stroke-dashoffset:80"/>
+      <path class="br" d="M162 88C170 70 180 52 188 36"    stroke="#9B6F3A" stroke-width="3" fill="none" stroke-linecap="round" style="stroke-dasharray:60;stroke-dashoffset:60"/>
+      <path class="br" d="M162 88C152 70 140 52 130 36"    stroke="#9B6F3A" stroke-width="3" fill="none" stroke-linecap="round" style="stroke-dasharray:60;stroke-dashoffset:60"/>
 
-        <use href="#leaf-heart" x="222" y="210" width="30" height="28" fill="#C0392B" transform="rotate(18,237,224)"/>
-        <use href="#leaf-heart" x="238" y="196" width="26" height="24" fill="#8B0000" transform="rotate(-6,251,208)"/>
-        <use href="#leaf-heart" x="210" y="226" width="22" height="20" fill="#E57373" transform="rotate(10,221,236)"/>
-
-        <!-- Centro arriba -->
-        <use href="#leaf-heart" x="140" y="196" width="32" height="30" fill="#C0392B" transform="rotate(-10,156,211)"/>
-        <use href="#leaf-heart" x="164" y="184" width="28" height="26" fill="#8B0000" transform="rotate(6,178,197)"/>
-        <use href="#leaf-heart" x="148" y="214" width="24" height="22" fill="#E57373" transform="rotate(-18,160,225)"/>
-        <use href="#leaf-heart" x="175" y="198" width="26" height="24" fill="#C0392B" transform="rotate(14,188,210)"/>
-        <use href="#leaf-heart" x="155" y="172" width="30" height="28" fill="#8B0000" transform="rotate(-4,170,186)"/>
-
-        <!-- Cima del árbol -->
-        <use href="#leaf-heart" x="145" y="148" width="34" height="32" fill="#C0392B" transform="rotate(-8,162,164)"/>
-        <use href="#leaf-heart" x="168" y="140" width="30" height="28" fill="#8B0000" transform="rotate(12,183,154)"/>
-        <use href="#leaf-heart" x="152" y="162" width="26" height="24" fill="#E57373" transform="rotate(-20,165,174)"/>
-        <use href="#leaf-heart" x="174" y="156" width="28" height="26" fill="#C0392B" transform="rotate(5,188,169)"/>
-        <use href="#leaf-heart" x="160" y="132" width="32" height="30" fill="#8B0000" transform="rotate(-14,176,147)"/>
-        <use href="#leaf-heart" x="138" y="168" width="24" height="22" fill="#E57373" transform="rotate(18,150,179)"/>
-        <use href="#leaf-heart" x="185" y="148" width="26" height="24" fill="#C0392B" transform="rotate(-6,198,160)"/>
-      </g>
+      <!-- Hojas generadas por JS aquí -->
+      <g id="leaves" opacity="0"></g>
     </svg>
   </div>
 </div>
 
-<!-- ═══ ESCENA 4: ÁRBOL DERECHA + CONTADOR ═══ -->
-<div id="scene4">
-  <!-- Mini árbol para escena 4 -->
-  <div id="tree-right">
-    <svg viewBox="0 0 260 600" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" overflow="visible">
-      <defs>
-        <symbol id="lh2" viewBox="0 0 20 18">
-          <path d="M10 16 C10 16 1 10 1 5 C1 2.2 3.2 0 6 0 C7.6 0 9 0.9 10 2.1 C11 0.9 12.4 0 14 0 C16.8 0 19 2.2 19 5 C19 10 10 16 10 16Z"/>
-        </symbol>
-      </defs>
-      <!-- Tronco -->
-      <line x1="130" y1="600" x2="130" y2="340" stroke="#5D3A1A" stroke-width="22" stroke-linecap="round"/>
-      <!-- Ramas -->
-      <line x1="130" y1="470" x2="60"  y2="390" stroke="#7B4A22" stroke-width="11" stroke-linecap="round"/>
-      <line x1="130" y1="450" x2="205" y2="380" stroke="#7B4A22" stroke-width="11" stroke-linecap="round"/>
-      <line x1="130" y1="420" x2="55"  y2="325" stroke="#8B5E3C" stroke-width="8"  stroke-linecap="round"/>
-      <line x1="130" y1="408" x2="210" y2="318" stroke="#8B5E3C" stroke-width="8"  stroke-linecap="round"/>
-      <line x1="130" y1="378" x2="80"  y2="278" stroke="#9B6E4C" stroke-width="5"  stroke-linecap="round"/>
-      <line x1="130" y1="368" x2="182" y2="270" stroke="#9B6E4C" stroke-width="5"  stroke-linecap="round"/>
-      <line x1="130" y1="340" x2="130" y2="210" stroke="#9B6E4C" stroke-width="5"  stroke-linecap="round"/>
-      <line x1="60"  y1="390" x2="35"  y2="340" stroke="#AB7E5C" stroke-width="4" stroke-linecap="round"/>
-      <line x1="205" y1="380" x2="228" y2="332" stroke="#AB7E5C" stroke-width="4" stroke-linecap="round"/>
-      <line x1="55"  y1="325" x2="30"  y2="278" stroke="#BB8E6C" stroke-width="3" stroke-linecap="round"/>
-      <line x1="210" y1="318" x2="236" y2="272" stroke="#BB8E6C" stroke-width="3" stroke-linecap="round"/>
-      <line x1="80"  y1="278" x2="62"  y2="230" stroke="#CB9E7C" stroke-width="2" stroke-linecap="round"/>
-      <line x1="182" y1="270" x2="200" y2="222" stroke="#CB9E7C" stroke-width="2" stroke-linecap="round"/>
-      <line x1="130" y1="210" x2="118" y2="170" stroke="#CB9E7C" stroke-width="2" stroke-linecap="round"/>
-      <line x1="130" y1="210" x2="144" y2="170" stroke="#CB9E7C" stroke-width="2" stroke-linecap="round"/>
+<!-- ══ ESCENA 4 ══ -->
+<div class="scene" id="s4">
+  <div id="s4-inner">
+    <div id="tree-side">
+      <!-- SVG igual al árbol escena 3 pero compacto, hojas también por JS -->
+      <svg id="tree-side-svg" viewBox="0 0 340 720" xmlns="http://www.w3.org/2000/svg" overflow="visible">
+        <defs>
+          <linearGradient id="tG3" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%"   stop-color="#2E1505"/>
+            <stop offset="35%"  stop-color="#5A3010"/>
+            <stop offset="65%"  stop-color="#8B5A2B"/>
+            <stop offset="100%" stop-color="#3A1F05"/>
+          </linearGradient>
+          <symbol id="LH3" viewBox="-1 -1 22 20" overflow="visible">
+            <path d="M10 17C10 17 0.5 10.5 0.5 5.2C0.5 2.3 2.8 0 5.8 0C7.5 0 9 0.85 10 2.1C11 0.85 12.5 0 14.2 0C17.2 0 19.5 2.3 19.5 5.2C19.5 10.5 10 17 10 17Z"/>
+          </symbol>
+        </defs>
+        <!-- Tronco escena 4 -->
+        <path d="M178 720C176 680 174 635 173 584C172 533 170 480 169 432C168 388 167 350 166 312C165 276 164 244 163 212"
+              stroke="#1A0A02" stroke-width="20" fill="none" stroke-linecap="round"/>
+        <path d="M170 720C168 680 166 635 165 584C164 533 162 480 161 432C160 388 159 350 158 312C157 276 156 244 155 212"
+              stroke="url(#tG3)" stroke-width="28" fill="none" stroke-linecap="round"/>
+        <path d="M163 720C162 680 160 635 159 584C158 533 157 480 157 432C156 388 155 350 154 312C153 276 152 244 151 212"
+              stroke="#8B5A2B" stroke-width="8" fill="none" stroke-linecap="round" opacity="0.4"/>
+        <!-- Raíces s4 -->
+        <path d="M168 720C157 712 140 718 126 716" stroke="#2E1505" stroke-width="9" fill="none" stroke-linecap="round"/>
+        <path d="M172 720C182 713 198 718 212 716" stroke="#2E1505" stroke-width="8" fill="none" stroke-linecap="round"/>
+        <!-- Ramas s4 -->
+        <path d="M163 582C148 564 128 548 104 534C86 522 66 512 44 504"    stroke="#4A2A0A" stroke-width="16" fill="none" stroke-linecap="round"/>
+        <path d="M166 570C183 552 206 536 228 522C248 510 270 500 294 492" stroke="#4A2A0A" stroke-width="16" fill="none" stroke-linecap="round"/>
+        <path d="M161 495C146 476 124 458 98 444C78 432 56 422 32 414"    stroke="#5A3010" stroke-width="12" fill="none" stroke-linecap="round"/>
+        <path d="M164 484C180 465 203 448 224 434C244 422 266 412 290 404" stroke="#5A3010" stroke-width="12" fill="none" stroke-linecap="round"/>
+        <path d="M158 408C144 388 122 368 96 354C76 342 52 332 26 322"    stroke="#6B3F15" stroke-width="9" fill="none" stroke-linecap="round"/>
+        <path d="M162 397C178 377 200 358 220 344C240 330 262 320 286 312" stroke="#6B3F15" stroke-width="9" fill="none" stroke-linecap="round"/>
+        <path d="M155 326C140 306 118 286 92 272C72 260 48 250 22 242"    stroke="#7B4F22" stroke-width="6" fill="none" stroke-linecap="round"/>
+        <path d="M159 316C174 296 195 277 214 264C234 250 256 240 280 232" stroke="#7B4F22" stroke-width="6" fill="none" stroke-linecap="round"/>
+        <!-- Sub-ramas s4 -->
+        <path d="M44 504C30 490 14 476 2 462"   stroke="#6B3F15" stroke-width="7" fill="none" stroke-linecap="round"/>
+        <path d="M44 504C54 486 68 472 86 462"  stroke="#6B3F15" stroke-width="7" fill="none" stroke-linecap="round"/>
+        <path d="M294 492C308 478 322 464 336 452" stroke="#6B3F15" stroke-width="7" fill="none" stroke-linecap="round"/>
+        <path d="M32 414C18 396 4 380 -6 362"   stroke="#7B4F22" stroke-width="5" fill="none" stroke-linecap="round"/>
+        <path d="M290 404C304 386 318 370 330 354" stroke="#7B4F22" stroke-width="5" fill="none" stroke-linecap="round"/>
+        <path d="M26 322C12 304 -2 286 -12 268"  stroke="#8B5F2A" stroke-width="4" fill="none" stroke-linecap="round"/>
+        <path d="M22 242C8 224 -4 206 -12 188"   stroke="#9B6F3A" stroke-width="3" fill="none" stroke-linecap="round"/>
+        <path d="M280 232C294 214 308 196 318 178" stroke="#9B6F3A" stroke-width="3" fill="none" stroke-linecap="round"/>
+        <!-- Cima s4 -->
+        <path d="M155 212C150 194 144 173 140 151C136 130 133 108 131 86"
+              stroke="#6B3F15" stroke-width="7" fill="none" stroke-linecap="round"/>
+        <path d="M155 212C164 194 175 175 183 158" stroke="#7B4F22" stroke-width="4" fill="none" stroke-linecap="round"/>
+        <path d="M155 212C144 194 133 175 123 158" stroke="#7B4F22" stroke-width="4" fill="none" stroke-linecap="round"/>
+        <path d="M131 86C126 68 121 50 119 32"   stroke="#8B5F2A" stroke-width="4" fill="none" stroke-linecap="round"/>
+        <path d="M131 86C139 68 148 50 154 34"   stroke="#9B6F3A" stroke-width="3" fill="none" stroke-linecap="round"/>
+        <path d="M131 86C122 68 112 50 104 34"   stroke="#9B6F3A" stroke-width="3" fill="none" stroke-linecap="round"/>
 
-      <!-- Hojas estáticas en árbol escena 4 -->
-      <use href="#lh2" x="18"  y="328" width="22" height="20" fill="#8B0000"/>
-      <use href="#lh2" x="36"  y="316" width="20" height="18" fill="#C0392B"/>
-      <use href="#lh2" x="215" y="320" width="22" height="20" fill="#E57373"/>
-      <use href="#lh2" x="228" y="308" width="20" height="18" fill="#C0392B"/>
-      <use href="#lh2" x="12"  y="270" width="24" height="22" fill="#C0392B"/>
-      <use href="#lh2" x="30"  y="258" width="20" height="18" fill="#8B0000"/>
-      <use href="#lh2" x="224" y="264" width="24" height="22" fill="#8B0000"/>
-      <use href="#lh2" x="238" y="250" width="20" height="18" fill="#E57373"/>
-      <use href="#lh2" x="46"  y="218" width="26" height="24" fill="#E57373"/>
-      <use href="#lh2" x="64"  y="204" width="22" height="20" fill="#C0392B"/>
-      <use href="#lh2" x="186" y="208" width="26" height="24" fill="#8B0000"/>
-      <use href="#lh2" x="200" y="194" width="22" height="20" fill="#C0392B"/>
-      <use href="#lh2" x="104" y="158" width="28" height="26" fill="#C0392B"/>
-      <use href="#lh2" x="122" y="146" width="26" height="24" fill="#8B0000"/>
-      <use href="#lh2" x="140" y="154" width="24" height="22" fill="#E57373"/>
-      <use href="#lh2" x="112" y="170" width="22" height="20" fill="#C0392B"/>
-    </svg>
-  </div>
+        <g id="leaves4"></g>
+      </svg>
+    </div>
 
-  <!-- PANEL CONTADOR -->
-  <div id="counter-panel">
-    <span class="counter-label">Mi amor por ti comenzó hace...</span>
-    <span class="counter-name" id="love-name">Para ti ♥</span>
-    <div class="time-row">
-      <div class="time-unit">
-        <span class="time-val" id="cnt-days">---</span>
-        <span class="time-lbl">días</span>
-      </div>
-      <div class="time-unit">
-        <span class="time-val" id="cnt-hours">--</span>
-        <span class="time-lbl">horas</span>
-      </div>
-      <div class="time-unit">
-        <span class="time-val" id="cnt-mins">--</span>
-        <span class="time-lbl">minutos</span>
-      </div>
-      <div class="time-unit">
-        <span class="time-val" id="cnt-secs">--</span>
-        <span class="time-lbl">segundos</span>
+    <div id="counter-wrap">
+      <span class="cnt-intro">Mi amor por ti comenzó hace…</span>
+      <span class="cnt-name" id="love-name">Para ti ♥</span>
+      <div class="time-row">
+        <div class="tu"><span class="tv" id="cd">---</span><span class="tl">días</span></div>
+        <div class="tu"><span class="tv" id="ch">--</span><span class="tl">horas</span></div>
+        <div class="tu"><span class="tv" id="cm">--</span><span class="tl">minutos</span></div>
+        <div class="tu"><span class="tv" id="cs">--</span><span class="tl">segundos</span></div>
       </div>
     </div>
   </div>
 </div>
 
-<!-- REINICIAR -->
-<button id="restart-btn" onclick="restart()">↺ Repetir</button>
+<button id="restart" onclick="init()">↺ Repetir</button>
 
 <script>
-// ═══════════════════════════════════════════════════════════════
-// CONFIGURACIÓN — cambia aquí la fecha de inicio y el nombre
-// ═══════════════════════════════════════════════════════════════
-const LOVE_START_DATE = new Date('2024-02-14T00:00:00');
+// ══════════════════════════
+//  CONFIGURACIÓN
+// ══════════════════════════
+const LOVE_DATE = new Date('2024-02-14T00:00:00');
 const LOVE_NAME = 'Para ti ♥';
-// ═══════════════════════════════════════════════════════════════
+// ══════════════════════════
 
-const scene1 = document.getElementById('scene1');
-const scene2 = document.getElementById('scene2');
-const scene3 = document.getElementById('scene3');
-const scene4 = document.getElementById('scene4');
-const fallingHeart = document.getElementById('falling-heart');
-const fallingPath = document.getElementById('falling-path');
-const heartBtn = document.getElementById('heart-btn');
-const restartBtn = document.getElementById('restart-btn');
-const leavesGroup = document.getElementById('leaves-group');
+const $ = id => document.getElementById(id);
+let timers = [];
+const sto  = (fn,ms) => { const t=setTimeout(fn,ms);  timers.push(t); return t; };
+const siv  = (fn,ms) => { const t=setInterval(fn,ms); timers.push(t); return t; };
+const wait = ms => new Promise(r => setTimeout(r, ms));
+const clearTimers = () => { timers.forEach(t=>{clearTimeout(t);clearInterval(t);}); timers=[]; };
+const clearLeaves = () => document.querySelectorAll('.fl').forEach(l=>l.remove());
 
-let fallLeafInterval = null;
-let counterInterval = null;
-let phase = 'scene1';
+const SVG_NS = 'http://www.w3.org/2000/svg';
 
-// ─── Utilidades ───────────────────────────────────────────────
-const delay = ms => new Promise(r => setTimeout(r, ms));
+// ══════════════════════════════════════════════════════════
+//  GENERACIÓN DE HOJAS A LO LARGO DE CADA RAMA
+// ══════════════════════════════════════════════════════════
 
-function lerp(a, b, t) { return a + (b - a) * t; }
+// Hoja-corazón path (relativa al origen del símbolo)
+const HEART_PATH = "M10 17C10 17 0.5 10.5 0.5 5.2C0.5 2.3 2.8 0 5.8 0C7.5 0 9 0.85 10 2.1C11 0.85 12.5 0 14.2 0C17.2 0 19.5 2.3 19.5 5.2C19.5 10.5 10 17 10 17Z";
+const COLORS = ['#6B0000','#8B1010','#B02020','#C83030','#E05050','#B82828'];
 
-function animateVal(el, from, to, duration, fmt = v => Math.round(v)) {
-  const start = performance.now();
-  function tick(now) {
-    const t = Math.min((now - start) / duration, 1);
-    el.textContent = fmt(lerp(from, to, t));
-    if (t < 1) requestAnimationFrame(tick);
+function rnd(a,b){ return a + Math.random()*(b-a); }
+function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+
+// Evalúa un punto a lo largo de una curva cúbica de Bézier (t 0..1)
+function bezier(p0,p1,p2,p3,t){
+  const u=1-t;
+  return {
+    x: u*u*u*p0.x + 3*u*u*t*p1.x + 3*u*t*t*p2.x + t*t*t*p3.x,
+    y: u*u*u*p0.y + 3*u*u*t*p1.y + 3*u*t*t*p2.y + t*t*t*p3.y
+  };
+}
+
+// Para líneas rectas (2 puntos) usa bezier degenerado
+function lerp2(p0,p3,t){
+  const p1={x:p0.x+(p3.x-p0.x)/3, y:p0.y+(p3.y-p0.y)/3};
+  const p2={x:p0.x+2*(p3.x-p0.x)/3, y:p0.y+2*(p3.y-p0.y)/3};
+  return bezier(p0,p1,p2,p3,t);
+}
+
+// Coloca n hojas a lo largo de un segmento dado por array de puntos (bezier cubico)
+// offset: desplazamiento perpendicular (-: izq, +: der), spread: variación
+function addLeavesAlongCurve(group, pts, count, sizeMin, sizeMax, perpSpread, side){
+  // pts = [p0,p1,p2,p3] para bezier, o [p0,p3] para línea
+  const isBez = pts.length===4;
+  for(let i=0;i<count;i++){
+    const t = rnd(0.05, 0.95);
+    const pt = isBez
+      ? bezier(pts[0],pts[1],pts[2],pts[3],t)
+      : lerp2(pts[0],pts[1],t);
+
+    // Derivada para obtener tangente
+    let dx,dy;
+    if(isBez){
+      const dt=0.01, t2=Math.min(t+dt,1);
+      const pt2=bezier(pts[0],pts[1],pts[2],pts[3],t2);
+      dx=pt2.x-pt.x; dy=pt2.y-pt.y;
+    } else {
+      dx=pts[1].x-pts[0].x; dy=pts[1].y-pts[0].y;
+    }
+    const len=Math.sqrt(dx*dx+dy*dy)||1;
+    // Normal perpendicular
+    const nx=-dy/len, ny=dx/len;
+
+    // Desplazamiento perpendicular con algo de ruido
+    const basePerp = side===0 ? (Math.random()<0.5?1:-1) : side;
+    const perp = basePerp * rnd(2, perpSpread);
+    const fx = pt.x + nx*perp + rnd(-3,3);
+    const fy = pt.y + ny*perp + rnd(-3,3);
+
+    const size = rnd(sizeMin, sizeMax);
+    const rot  = rnd(-35, 35) + (side < 0 ? rnd(-20,0) : rnd(0,20));
+    const color= pick(COLORS);
+    const opacity = rnd(0.82, 1);
+
+    const g = document.createElementNS(SVG_NS,'g');
+    // Centrar en (fx,fy) teniendo en cuenta el viewbox 0-20 x 0-18
+    g.setAttribute('transform',
+      `translate(${fx - size},${fy - size*0.88}) rotate(${rot},${size},${size*0.88})`);
+
+    const path = document.createElementNS(SVG_NS,'path');
+    path.setAttribute('d', HEART_PATH);
+    // Escalar de [0..20,0..18] → [0..size*2, 0..size*1.76]
+    const scaleX = size*2/20, scaleY = size*1.76/18;
+    path.setAttribute('transform',`scale(${scaleX},${scaleY})`);
+    path.setAttribute('fill', color);
+    path.setAttribute('opacity', String(opacity));
+
+    g.appendChild(path);
+    group.appendChild(g);
   }
-  requestAnimationFrame(tick);
 }
 
-// ─── ESCENA 1 → 2: Click en corazón ─────────────────────────
-heartBtn.addEventListener('click', () => {
-  if (phase !== 'scene1') return;
-  phase = 'falling';
-  startHeartFall();
-});
+// ══ Define las ramas (sus puntos de control) ══
+// Para escena 3 (viewBox 440x740, origen tronco ~x=205,y=740)
 
-async function startHeartFall() {
-  // Mostrar efecto de click en el botón
-  heartBtn.style.animation = 'none';
-  heartBtn.style.transform = 'scale(0.92)';
-  await delay(120);
+// Bezier 4 puntos: parseamos los "d" manualmente como puntos de control
+// Aquí definimos sólo los endpoints y aproximamos los controles
+// Formato: { pts:[p0,p1,p2,p3], count, sizeMin, sizeMax, spread, side }
+// side: -1=izq, 1=der, 0=ambos
 
-  // Transición a escena 2
-  scene1.style.transition = 'opacity 0.4s';
-  scene1.style.opacity = '0';
-  await delay(350);
-  scene1.style.display = 'none';
+const BRANCHES_S3 = [
+  // Ramas bajas izquierda (gruesas, más hojas)
+  {pts:[{x:210,y:590},{x:180,y:560},{x:140,y:540},{x:66,y:492}],   count:40, min:10,max:24, sp:30, side:0},
+  {pts:[{x:66,y:492}, {x:50,y:476},{x:32,y:460}, {x:16,y:444}],   count:22, min:9, max:20, sp:24, side:-1},
+  {pts:[{x:66,y:492}, {x:72,y:472},{x:90,y:456}, {x:106,y:444}],  count:22, min:9, max:20, sp:24, side:1},
+  // Ramas bajas derecha
+  {pts:[{x:214,y:578},{x:240,y:558},{x:280,y:540},{x:360,y:490}],  count:40, min:10,max:24, sp:30, side:0},
+  {pts:[{x:360,y:490},{x:376,y:474},{x:392,y:458},{x:408,y:444}],  count:22, min:9, max:20, sp:24, side:1},
+  {pts:[{x:360,y:490},{x:350,y:472},{x:336,y:456},{x:318,y:444}],  count:22, min:9, max:20, sp:24, side:-1},
+  // Ramas medias izquierda
+  {pts:[{x:208,y:500},{x:180,y:476},{x:150,y:456},{x:58,y:410}],   count:36, min:9, max:22, sp:28, side:0},
+  {pts:[{x:58,y:410}, {x:44,y:394},{x:28,y:378}, {x:8,y:360}],    count:20, min:8, max:18, sp:22, side:-1},
+  {pts:[{x:58,y:410}, {x:66,y:393},{x:82,y:377}, {x:100,y:366}],  count:20, min:8, max:18, sp:22, side:1},
+  // Ramas medias derecha
+  {pts:[{x:212,y:490},{x:238,y:468},{x:268,y:450},{x:352,y:404}],  count:36, min:9, max:22, sp:28, side:0},
+  {pts:[{x:352,y:404},{x:366,y:388},{x:382,y:372},{x:400,y:356}],  count:20, min:8, max:18, sp:22, side:1},
+  {pts:[{x:352,y:404},{x:342,y:388},{x:326,y:372},{x:308,y:360}],  count:20, min:8, max:18, sp:22, side:-1},
+  // Ramas altas izquierda
+  {pts:[{x:205,y:415},{x:178,y:390},{x:148,y:368},{x:54,y:320}],   count:32, min:8, max:20, sp:26, side:0},
+  {pts:[{x:54,y:320}, {x:38,y:304},{x:20,y:286}, {x:4,y:268}],    count:18, min:7, max:16, sp:20, side:-1},
+  {pts:[{x:54,y:320}, {x:66,y:303},{x:82,y:286}, {x:102,y:275}],  count:18, min:7, max:16, sp:20, side:1},
+  // Ramas altas derecha
+  {pts:[{x:210,y:404},{x:232,y:380},{x:258,y:358},{x:348,y:310}],  count:32, min:8, max:20, sp:26, side:0},
+  {pts:[{x:348,y:310},{x:362,y:294},{x:378,y:276},{x:398,y:258}],  count:18, min:7, max:16, sp:20, side:1},
+  {pts:[{x:348,y:310},{x:336,y:294},{x:320,y:278},{x:300,y:266}],  count:18, min:7, max:16, sp:20, side:-1},
+  // Centro vertical
+  {pts:[{x:206,y:360},{x:202,y:330},{x:198,y:294},{x:194,y:210}],  count:28, min:8, max:19, sp:22, side:0},
+  // Sub-altas izquierda
+  {pts:[{x:202,y:335},{x:176,y:308},{x:148,y:286},{x:50,y:238}],   count:28, min:7, max:17, sp:22, side:0},
+  {pts:[{x:50,y:238}, {x:36,y:222},{x:18,y:205}, {x:2,y:184}],    count:16, min:6, max:14, sp:18, side:-1},
+  {pts:[{x:50,y:238}, {x:64,y:222},{x:82,y:206}, {x:102,y:192}],  count:16, min:6, max:14, sp:18, side:1},
+  // Sub-altas derecha
+  {pts:[{x:208,y:324},{x:232,y:298},{x:256,y:276},{x:344,y:228}],  count:28, min:7, max:17, sp:22, side:0},
+  {pts:[{x:344,y:228},{x:358,y:212},{x:376,y:196},{x:394,y:174}],  count:16, min:6, max:14, sp:18, side:1},
+  {pts:[{x:344,y:228},{x:332,y:212},{x:316,y:196},{x:296,y:182}],  count:16, min:6, max:14, sp:18, side:-1},
+  // Cima
+  {pts:[{x:194,y:210},{x:182,y:180},{x:170,y:150},{x:162,y:88}],   count:30, min:8, max:19, sp:24, side:0},
+  {pts:[{x:194,y:210},{x:206,y:192},{x:218,y:175},{x:230,y:156}],  count:16, min:6, max:14, sp:18, side:1},
+  {pts:[{x:194,y:210},{x:182,y:192},{x:168,y:175},{x:154,y:156}],  count:16, min:6, max:14, sp:18, side:-1},
+  {pts:[{x:162,y:88}, {x:156,y:70},{x:150,y:52}, {x:148,y:34}],   count:18, min:6, max:16, sp:18, side:0},
+  {pts:[{x:162,y:88}, {x:170,y:70},{x:180,y:52}, {x:188,y:36}],   count:12, min:5, max:13, sp:14, side:1},
+  {pts:[{x:162,y:88}, {x:152,y:70},{x:140,y:52}, {x:130,y:36}],   count:12, min:5, max:13, sp:14, side:-1},
+  // Puntas extremas (rematar)
+  {pts:[{x:16,y:444}, {x:8,y:432}], count:10, min:6,max:14,sp:14,side:0},
+  {pts:[{x:106,y:444},{x:116,y:432}],count:10, min:6,max:14,sp:14,side:0},
+  {pts:[{x:8,y:360},  {x:0,y:348}], count:8,  min:5,max:12,sp:12,side:0},
+  {pts:[{x:100,y:366},{x:110,y:354}],count:8,  min:5,max:12,sp:12,side:0},
+  {pts:[{x:408,y:444},{x:418,y:432}],count:10, min:6,max:14,sp:14,side:0},
+  {pts:[{x:318,y:444},{x:308,y:432}],count:10, min:6,max:14,sp:14,side:0},
+  {pts:[{x:400,y:356},{x:410,y:344}],count:8,  min:5,max:12,sp:12,side:0},
+];
 
-  scene2.style.display = 'flex';
-  fallingHeart.style.cssText = `
-    position: absolute;
-    top: 30%; left: 50%;
-    transform: translateX(-50%);
-    width: 90px; height: 90px;
-    transition: none;
-  `;
+// Ramas escena 4 (viewBox 340x720, tronco ~x=163)
+const BRANCHES_S4 = [
+  {pts:[{x:163,y:582},{x:138,y:558},{x:108,y:538},{x:44,y:504}],  count:30,min:8,max:20,sp:24,side:0},
+  {pts:[{x:44,y:504}, {x:30,y:490},{x:14,y:476}, {x:2,y:462}],   count:16,min:7,max:16,sp:20,side:-1},
+  {pts:[{x:44,y:504}, {x:54,y:486},{x:68,y:472}, {x:86,y:462}],  count:16,min:7,max:16,sp:20,side:1},
+  {pts:[{x:166,y:570},{x:190,y:548},{x:218,y:530},{x:294,y:492}], count:30,min:8,max:20,sp:24,side:0},
+  {pts:[{x:294,y:492},{x:308,y:478},{x:322,y:464},{x:336,y:452}], count:16,min:7,max:16,sp:20,side:1},
+  {pts:[{x:161,y:495},{x:138,y:472},{x:110,y:452},{x:32,y:414}],  count:28,min:7,max:18,sp:22,side:0},
+  {pts:[{x:32,y:414}, {x:18,y:396},{x:4,y:380},  {x:-6,y:362}],  count:14,min:6,max:14,sp:18,side:-1},
+  {pts:[{x:164,y:484},{x:186,y:462},{x:208,y:444},{x:290,y:404}], count:28,min:7,max:18,sp:22,side:0},
+  {pts:[{x:290,y:404},{x:304,y:386},{x:318,y:370},{x:330,y:354}], count:14,min:6,max:14,sp:18,side:1},
+  {pts:[{x:158,y:408},{x:136,y:385},{x:108,y:363},{x:26,y:322}],  count:26,min:7,max:17,sp:20,side:0},
+  {pts:[{x:26,y:322}, {x:12,y:304},{x:-2,y:286}, {x:-12,y:268}], count:12,min:5,max:13,sp:16,side:-1},
+  {pts:[{x:162,y:397},{x:182,y:374},{x:204,y:353},{x:286,y:312}], count:26,min:7,max:17,sp:20,side:0},
+  {pts:[{x:286,y:312},{x:300,y:294},{x:318,y:277},{x:330,y:260}], count:12,min:5,max:13,sp:16,side:1},
+  {pts:[{x:155,y:326},{x:132,y:302},{x:104,y:278},{x:22,y:242}],  count:22,min:6,max:15,sp:18,side:0},
+  {pts:[{x:22,y:242}, {x:8,y:224},{x:-4,y:206},  {x:-12,y:188}], count:10,min:5,max:12,sp:14,side:-1},
+  {pts:[{x:159,y:316},{x:178,y:293},{x:198,y:271},{x:280,y:232}], count:22,min:6,max:15,sp:18,side:0},
+  {pts:[{x:280,y:232},{x:294,y:214},{x:308,y:196},{x:318,y:178}], count:10,min:5,max:12,sp:14,side:1},
+  {pts:[{x:155,y:212},{x:148,y:185},{x:140,y:155},{x:131,y:86}],  count:22,min:6,max:16,sp:18,side:0},
+  {pts:[{x:155,y:212},{x:164,y:194},{x:175,y:175},{x:183,y:158}], count:12,min:5,max:13,sp:14,side:1},
+  {pts:[{x:155,y:212},{x:144,y:194},{x:133,y:175},{x:123,y:158}], count:12,min:5,max:13,sp:14,side:-1},
+  {pts:[{x:131,y:86}, {x:126,y:68},{x:121,y:50}, {x:119,y:32}],  count:14,min:5,max:13,sp:14,side:0},
+  {pts:[{x:131,y:86}, {x:139,y:68},{x:148,y:50}, {x:154,y:34}],  count:10,min:4,max:11,sp:12,side:1},
+  {pts:[{x:131,y:86}, {x:122,y:68},{x:112,y:50}, {x:104,y:34}],  count:10,min:4,max:11,sp:12,side:-1},
+];
 
-  await delay(100);
-
-  // FASE 1: el corazón se achica y se transforma en gota
-  // Animar morph de corazón a gota y caída
-  await animateHeartToDrop();
+function buildLeaves(group, branches){
+  group.innerHTML = '';
+  branches.forEach(b => {
+    addLeavesAlongCurve(group, b.pts, b.count, b.min, b.max, b.sp, b.side);
+  });
 }
 
-async function animateHeartToDrop() {
-  const groundY = window.innerHeight * 0.72;
-  let startTime = null;
-  const duration = 1600;
+// ══════════════════════════════════════════════════
+//  LÓGICA DE ESCENAS
+// ══════════════════════════════════════════════════
 
-  // Partida: top 30%
-  const startTop = window.innerHeight * 0.30;
+function showScene(id){
+  ['s1','s2','s3','s4'].forEach(s=>{
+    const el=$(s);
+    el.classList.toggle('active', s===id);
+  });
+}
 
-  await new Promise(resolve => {
-    function tick(ts) {
-      if (!startTime) startTime = ts;
-      const t = Math.min((ts - startTime) / duration, 1);
-      const ease = t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t; // easeInOut
-      const dropEase = t * t * (3 - 2 * t); // smooth step para caída
+function init(){
+  clearTimers(); clearLeaves();
 
-      // Posición
-      const currentTop = startTop + (groundY - startTop - 45) * dropEase;
-      // Escala: de 1 → 0.28 (se achica)
-      const scaleX = 1 - 0.72 * dropEase;
-      const scaleY = 1 - 0.62 * dropEase; // un poco más alto = forma de gota
-      // Rotación: da un giro leve
-      const rot = 12 * Math.sin(t * Math.PI);
+  // Reset dash offsets
+  document.querySelectorAll('#tree-main .tp, #tree-main .br').forEach(el=>{
+    const m = (el.getAttribute('style')||'').match(/stroke-dasharray:(\d+)/);
+    if(m) el.style.strokeDashoffset = m[1];
+    el.style.transition = 'none';
+  });
 
-      fallingHeart.style.top = currentTop + 'px';
-      fallingHeart.style.left = '50%';
-      fallingHeart.style.transform = `translateX(-50%) scaleX(${scaleX}) scaleY(${scaleY}) rotate(${rot}deg)`;
-      fallingHeart.style.opacity = t > 0.88 ? (1 - (t - 0.88) / 0.12) : 1;
+  // Limpiar hojas generadas
+  const lv = $('leaves'); if(lv) lv.innerHTML=''; lv && (lv.style.opacity='0');
+  $('tree-side').classList.remove('in');
+  $('counter-wrap').classList.remove('in');
+  $('restart').classList.remove('in');
+  $('heart-btn').style.animation = 'beat 1.5s ease-in-out infinite';
+  $('heart-btn').style.transform = '';
 
-      if (t < 1) {
-        requestAnimationFrame(tick);
-      } else {
-        resolve();
-      }
+  showScene('s1');
+}
+
+// ══ CAÍDA ══
+$('heart-btn').addEventListener('click', startFall);
+$('heart-btn').addEventListener('touchend', e=>{ e.preventDefault(); startFall(); });
+
+async function startFall(){
+  if(!$('s1').classList.contains('active')) return;
+  $('heart-btn').style.animation='none';
+  $('heart-btn').style.transform='scale(0.86)';
+  await wait(120);
+  showScene('s2');
+
+  const dh=$('drop-heart');
+  const vh=window.innerHeight;
+  const groundY=vh*0.72;
+  dh.style.cssText=`position:absolute;left:50%;top:${vh*0.3}px;transform:translateX(-50%);width:clamp(70px,20vw,100px);`;
+  await wait(60);
+  await dropAnim(dh, vh*0.3, groundY);
+  await impactFX(window.innerWidth/2, groundY);
+  await wait(300);
+  showScene('s3');
+  await wait(80);
+  await growTree();
+}
+
+function dropAnim(el, startY, endY){
+  return new Promise(resolve=>{
+    let t0=null; const dur=1500;
+    function tick(ts){
+      if(!t0) t0=ts;
+      const p=Math.min((ts-t0)/dur,1);
+      const ep=p*p*(3-2*p);
+      const sy=1-p*0.65, sx=1-p*0.78;
+      const rot=Math.sin(p*Math.PI*2)*8;
+      el.style.top=(startY+(endY-startY-50)*ep)+'px';
+      el.style.transform=`translateX(-50%) scaleX(${sx}) scaleY(${sy}) rotate(${rot}deg)`;
+      el.style.opacity=p>0.85?(1-(p-0.85)/0.15):1;
+      if(p<1) requestAnimationFrame(tick); else resolve();
     }
     requestAnimationFrame(tick);
   });
-
-  // IMPACTO
-  await impact();
 }
 
-async function impact() {
-  fallingHeart.style.opacity = '0';
-
-  // Onda de impacto
-  const wave = document.getElementById('impact-wave');
-  const ground = document.getElementById('ground-line');
-  ground.style.opacity = '1';
-  wave.style.transition = 'transform 0.5s cubic-bezier(0.2,0.8,0.4,1), opacity 0.5s';
-  wave.style.opacity = '0.8';
-  wave.style.transform = 'translateX(-50%) scaleX(1)';
-  setTimeout(() => {
-    wave.style.transform = 'translateX(-50%) scaleX(3)';
-    wave.style.opacity = '0';
-  }, 50);
-
-  // Partículas de impacto
-  spawnImpactParticles();
-
-  await delay(600);
-
-  // Transición a escena 3
-  scene2.style.transition = 'opacity 0.5s';
-  scene2.style.opacity = '0';
-  await delay(450);
-  scene2.style.display = 'none';
-  await showTree();
-}
-
-function spawnImpactParticles() {
-  const cx = window.innerWidth / 2;
-  const cy = window.innerHeight * 0.72;
-  const colors = ['#8B0000','#C0392B','#E57373','#FFCDD2'];
-
-  for (let i = 0; i < 14; i++) {
-    const p = document.createElement('div');
-    p.className = 'particle';
-    const angle = (Math.PI * 2 / 14) * i;
-    const dist = 40 + Math.random() * 60;
-    p.style.cssText = `
-      position: fixed;
-      left: ${cx}px; top: ${cy}px;
-      width: ${6 + Math.random() * 8}px;
-      height: ${6 + Math.random() * 8}px;
-      border-radius: 50%;
-      background: ${colors[i % colors.length]};
-      pointer-events: none;
-      z-index: 99;
-      transition: transform 0.7s cubic-bezier(0.2,0.8,0.4,1), opacity 0.7s;
-    `;
+async function impactFX(cx,cy){
+  $('drop-heart').style.opacity='0';
+  const g=$('ground');
+  g.style.opacity='1'; g.style.transform='scaleX(1)';
+  sto(()=>{ g.style.opacity='0'; },300);
+  const colors=['#6B0000','#B02020','#E05050','#F08080','#B02020'];
+  for(let i=0;i<16;i++){
+    const p=document.createElement('div');
+    const ang=(Math.PI*2/16)*i+(Math.random()-0.5)*0.4;
+    const d=45+Math.random()*65, s=5+Math.random()*9;
+    p.style.cssText=`position:fixed;left:${cx}px;top:${cy}px;z-index:10;width:${s}px;height:${s}px;border-radius:50%;background:${colors[i%5]};pointer-events:none;transition:transform 0.65s cubic-bezier(0.2,0.8,0.4,1),opacity 0.65s;`;
     document.body.appendChild(p);
-    requestAnimationFrame(() => {
-      p.style.transform = `translate(${Math.cos(angle) * dist}px, ${Math.sin(angle) * dist}px) scale(0)`;
-      p.style.opacity = '0';
+    requestAnimationFrame(()=>{
+      p.style.transform=`translate(${Math.cos(ang)*d}px,${Math.sin(ang)*d}px) scale(0)`;
+      p.style.opacity='0';
     });
-    setTimeout(() => p.remove(), 800);
+    sto(()=>p.remove(),750);
   }
+  await wait(200);
 }
 
-// ─── ESCENA 3: Árbol emergiendo ─────────────────────────────
-async function showTree() {
-  phase = 'tree';
-  scene3.style.display = 'flex';
-  scene3.style.opacity = '0';
-  scene3.style.transition = 'opacity 0.5s';
+// ══ ÁRBOL ══
+async function growTree(){
+  // Generar hojas antes de mostrarlas
+  buildLeaves($('leaves'), BRANCHES_S3);
 
-  await delay(50);
-  scene3.style.opacity = '1';
-
-  // Animar tronco y ramas con stroke-dashoffset
-  const trunk = document.getElementById('trunk');
-  const branches = document.querySelectorAll('#tree-svg .branch');
-
-  trunk.style.transition = 'stroke-dashoffset 1.1s cubic-bezier(0.4,0,0.2,1)';
-  trunk.style.strokeDashoffset = '0';
-
-  await delay(700);
-
-  // Ramas en oleadas
-  const branchArr = Array.from(branches);
-  for (let i = 0; i < branchArr.length; i++) {
-    branchArr[i].style.transition = `stroke-dashoffset ${0.4 + Math.random() * 0.3}s ease-out`;
-    branchArr[i].style.strokeDashoffset = '0';
-    if (i % 3 === 0) await delay(120);
-  }
-
-  await delay(400);
-
-  // Hojas aparecen con fade y scale
-  leavesGroup.style.transition = 'opacity 1.2s ease-out';
-  leavesGroup.style.opacity = '1';
-
-  // Pequeño sacudido del árbol
-  await delay(800);
-  await shakeTree();
-
-  // Transición a escena 4
-  await delay(400);
-  await moveToScene4();
-}
-
-function shakeTree() {
-  return new Promise(resolve => {
-    const treeSvg = document.getElementById('tree-svg');
-    const keyframes = [
-      {transform: 'rotate(0deg)', offset: 0},
-      {transform: 'rotate(2deg)', offset: 0.2},
-      {transform: 'rotate(-2deg)', offset: 0.4},
-      {transform: 'rotate(1.5deg)', offset: 0.6},
-      {transform: 'rotate(-1deg)', offset: 0.8},
-      {transform: 'rotate(0deg)', offset: 1},
-    ];
-    const anim = treeSvg.animate(keyframes, {duration: 800, easing: 'ease-in-out'});
-    anim.onfinish = resolve;
+  const trunks = document.querySelectorAll('#tree-main .tp');
+  trunks.forEach(el=>{
+    el.style.transition='stroke-dashoffset 1.3s cubic-bezier(0.4,0,0.2,1)';
+    el.style.strokeDashoffset='0';
   });
+  await wait(900);
+
+  const brs=Array.from(document.querySelectorAll('#tree-main .br'));
+  for(let i=0;i<brs.length;i++){
+    brs[i].style.transition=`stroke-dashoffset ${0.45+Math.random()*0.3}s ease-out`;
+    brs[i].style.strokeDashoffset='0';
+    if(i%2===0) await wait(85);
+  }
+  await wait(250);
+
+  // Hojas aparecen con fade suave
+  $('leaves').style.transition='opacity 1.6s ease-out';
+  $('leaves').style.opacity='1';
+  await wait(1800);
+
+  // Crossfade suave a escena 4 (sin meneo)
+  await crossFadeToS4();
 }
 
-// ─── ESCENA 4: árbol a la derecha + contador ─────────────────
-async function moveToScene4() {
-  scene4.style.display = 'block';
-  scene4.style.opacity = '0';
-  scene4.style.transition = 'opacity 0.6s';
+async function crossFadeToS4(){
+  const s3=$('s3'), s4=$('s4');
+  s4.style.opacity='0';
+  s4.classList.add('active');
+  s4.style.opacity='0';
 
-  scene3.style.transition = 'opacity 0.6s';
-  scene3.style.opacity = '0';
+  const dur=1000, t0=performance.now();
+  await new Promise(resolve=>{
+    function tick(now){
+      const p=Math.min((now-t0)/dur,1);
+      const ep=p<0.5?2*p*p:-1+(4-2*p)*p;
+      s3.style.opacity=String(1-ep);
+      s4.style.opacity=String(ep);
+      if(p<1) requestAnimationFrame(tick); else resolve();
+    }
+    requestAnimationFrame(tick);
+  });
+  s3.classList.remove('active'); s3.style.opacity='';
+  s4.style.opacity='';
 
-  await delay(200);
-  scene4.style.opacity = '1';
-  await delay(400);
-  scene3.style.display = 'none';
+  // Árbol desliza
+  buildLeaves($('leaves4'), BRANCHES_S4);
+  await wait(80);
+  $('tree-side').classList.add('in');
+  $('love-name').textContent=LOVE_NAME;
 
-  // Árbol desliza desde la derecha
-  const treeRight = document.getElementById('tree-right');
-  await delay(50);
-  treeRight.classList.add('visible');
-
-  // Nombre
-  document.getElementById('love-name').textContent = LOVE_NAME;
-
-  // Panel contador
-  const counterPanel = document.getElementById('counter-panel');
-  await delay(300);
-  counterPanel.classList.add('visible');
-
-  // Iniciar hojas cayendo
-  await delay(800);
-  startFallingLeaves();
-
-  // Iniciar contador
+  await wait(600);
+  $('counter-wrap').classList.add('in');
   startCounter();
 
-  // Mostrar botón reiniciar
-  await delay(1000);
-  restartBtn.classList.add('visible');
+  await wait(1200);
+  startFallingLeaves();
 
-  phase = 'done';
+  await wait(800);
+  $('restart').classList.add('in');
 }
 
-// ─── HOJAS CAYENDO ────────────────────────────────────────────
-const leafColors = ['#8B0000', '#C0392B', '#E57373', '#C0392B', '#8B0000'];
+// ══ HOJAS CAYENDO ══
+const LC=['#6B0000','#8B1010','#B02020','#C83030','#E05050'];
 
-function createFallingLeaf() {
-  const container = document.getElementById('tree-right');
-  const rect = container.getBoundingClientRect();
+function spawnLeaf(){
+  const ts=$('tree-side');
+  if(!ts) return;
+  const r=ts.getBoundingClientRect();
+  if(r.width===0) return;
 
-  const leaf = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-  const size = 14 + Math.random() * 16;
-  const color = leafColors[Math.floor(Math.random() * leafColors.length)];
+  const size=12+Math.random()*22;
+  const color=LC[Math.floor(Math.random()*LC.length)];
+  const sx=r.left+r.width*0.05+Math.random()*r.width*0.85;
+  const sy=r.top+r.height*0.04+Math.random()*r.height*0.52;
+  const dy=(window.innerHeight-sy)+80;
+  const dx=(Math.random()-0.5)*180;
+  const dr=(Math.random()-0.5)*680;
+  const dur=2.2+Math.random()*3;
 
-  // Posición: desde el árbol (derecha de la pantalla)
-  const startX = rect.left + Math.random() * rect.width * 0.8 + rect.width * 0.1;
-  const startY = rect.top + Math.random() * rect.height * 0.55 + rect.height * 0.1;
-  const fallDist = (window.innerHeight - startY) + 60;
-  const drift = (Math.random() - 0.5) * 180;
-  const rot = (Math.random() - 0.5) * 720;
-  const dur = 2.5 + Math.random() * 2.5;
-
-  leaf.setAttribute('viewBox', '0 0 20 18');
-  leaf.setAttribute('width', size);
-  leaf.setAttribute('height', size * 0.9);
-  leaf.innerHTML = `<path d="M10 16 C10 16 1 10 1 5 C1 2.2 3.2 0 6 0 C7.6 0 9 0.9 10 2.1 C11 0.9 12.4 0 14 0 C16.8 0 19 2.2 19 5 C19 10 10 16 10 16Z" fill="${color}"/>`;
-  leaf.style.cssText = `
-    position: fixed;
-    left: ${startX}px;
-    top: ${startY}px;
-    pointer-events: none;
-    z-index: 50;
-    --fall-dist: ${fallDist}px;
-    --fall-rot: ${rot}deg;
-    --drift: ${drift}px;
-    animation: leafFall ${dur}s ease-in forwards;
-    opacity: 0.95;
-  `;
-  document.body.appendChild(leaf);
-  setTimeout(() => leaf.remove(), dur * 1000 + 100);
+  const svg=document.createElementNS(SVG_NS,'svg');
+  svg.setAttribute('viewBox','-1 -1 22 20');
+  svg.setAttribute('width',size);
+  svg.setAttribute('height',size*0.88);
+  svg.innerHTML=`<path d="M10 17C10 17 0.5 10.5 0.5 5.2C0.5 2.3 2.8 0 5.8 0C7.5 0 9 0.85 10 2.1C11 0.85 12.5 0 14.2 0C17.2 0 19.5 2.3 19.5 5.2C19.5 10.5 10 17 10 17Z" fill="${color}"/>`;
+  svg.className='fl';
+  svg.style.cssText=`left:${sx}px;top:${sy}px;--dx:${dx}px;--dy:${dy}px;--dr:${dr}deg;animation-duration:${dur}s;`;
+  document.body.appendChild(svg);
+  sto(()=>svg.remove(), dur*1000+100);
 }
 
-function startFallingLeaves() {
-  fallLeafInterval = setInterval(createFallingLeaf, 280);
+function startFallingLeaves(){ siv(spawnLeaf,240); }
+
+// ══ CONTADOR ══
+function updateCounter(){
+  const s=Math.floor(Math.max(0,Date.now()-LOVE_DATE.getTime())/1000);
+  $('cs').textContent=String(s%60).padStart(2,'0');
+  $('cm').textContent=String(Math.floor(s/60)%60).padStart(2,'0');
+  $('ch').textContent=String(Math.floor(s/3600)%24).padStart(2,'0');
+  $('cd').textContent=Math.floor(s/86400);
 }
+function startCounter(){ updateCounter(); siv(updateCounter,1000); }
 
-// ─── CONTADOR ────────────────────────────────────────────────
-function updateCounter() {
-  const now = new Date();
-  const diff = Math.max(0, now - LOVE_START_DATE);
-  const totalSecs = Math.floor(diff / 1000);
-  const secs  = totalSecs % 60;
-  const mins  = Math.floor(totalSecs / 60) % 60;
-  const hours = Math.floor(totalSecs / 3600) % 24;
-  const days  = Math.floor(totalSecs / 86400);
-
-  document.getElementById('cnt-days').textContent  = days;
-  document.getElementById('cnt-hours').textContent = String(hours).padStart(2,'0');
-  document.getElementById('cnt-mins').textContent  = String(mins).padStart(2,'0');
-  document.getElementById('cnt-secs').textContent  = String(secs).padStart(2,'0');
-}
-
-function startCounter() {
-  updateCounter();
-  counterInterval = setInterval(updateCounter, 1000);
-}
-
-// ─── REINICIAR ────────────────────────────────────────────────
-function restart() {
-  clearInterval(fallLeafInterval);
-  clearInterval(counterInterval);
-
-  // Limpiar hojas volando
-  document.querySelectorAll('.leaf-fall').forEach(l => l.remove());
-
-  phase = 'scene1';
-
-  // Reset estilos
-  scene1.style.display = 'flex';
-  scene1.style.opacity = '1';
-  scene2.style.display = 'none';
-  scene2.style.opacity = '1';
-  scene3.style.display = 'none';
-  scene3.style.opacity = '1';
-  scene4.style.display = 'none';
-  scene4.style.opacity = '1';
-
-  // Reset árbol SVG
-  const trunk = document.getElementById('trunk');
-  const branches = document.querySelectorAll('#tree-svg .branch');
-  trunk.style.transition = 'none';
-  trunk.style.strokeDashoffset = '600';
-  branches.forEach(b => {
-    b.style.transition = 'none';
-    b.style.strokeDashoffset = '300';
-  });
-  leavesGroup.style.transition = 'none';
-  leavesGroup.style.opacity = '0';
-
-  // Reset escena 4
-  document.getElementById('tree-right').classList.remove('visible');
-  document.getElementById('counter-panel').classList.remove('visible');
-
-  restartBtn.classList.remove('visible');
-  heartBtn.style.animation = 'heartbeat 1.4s ease-in-out infinite';
-  heartBtn.style.transform = '';
-}
+init();
 </script>
 </body>
 </html>
