@@ -10,7 +10,6 @@
 
 :root {
   --r1:#6B0000; --r2:#B02020; --r3:#E05050; --r4:#F08080;
-  --bark1:#2E1505; --bark2:#5A3010; --bark3:#8B5A2B;
   --bg:#FFF0F2;
 }
 
@@ -22,7 +21,8 @@ html, body {
   user-select:none;
 }
 
-.bg-layer {
+/* ── Fondo ── */
+.bg {
   position:fixed; inset:0; z-index:0;
   background:
     radial-gradient(ellipse 70% 60% at 20% 80%, #ffe0e5 0%, transparent 60%),
@@ -30,7 +30,7 @@ html, body {
     radial-gradient(ellipse 100% 100% at 50% 50%, #fff5f6 0%, #ffeaed 100%);
 }
 
-/* ══ ESCENAS ══ */
+/* ── Escenas ── */
 .scene {
   position:fixed; inset:0; z-index:1;
   display:flex; align-items:center; justify-content:center;
@@ -39,14 +39,13 @@ html, body {
 }
 .scene.active { opacity:1; pointer-events:all; }
 
-/* ══ ESCENA 1 ══ */
+/* ── Escena 1 ── */
 #s1 { flex-direction:column; gap:clamp(12px,3vw,24px); }
 
 .hint {
   font-family:'Dancing Script',cursive;
   font-size:clamp(1rem,4vw,1.5rem);
-  color:var(--r2);
-  opacity:0;
+  color:var(--r2); opacity:0;
   animation:fadeUp 1s 0.8s forwards;
 }
 @keyframes fadeUp {
@@ -55,81 +54,81 @@ html, body {
 }
 
 #heart-btn {
-  background:none; border:none; cursor:pointer;
-  padding:0; outline:none;
+  background:none; border:none; cursor:pointer; padding:0; outline:none;
   filter:drop-shadow(0 8px 28px rgba(176,32,32,0.4));
   animation:beat 1.5s ease-in-out infinite;
   touch-action:manipulation;
 }
 #heart-btn:active { transform:scale(0.88)!important; animation:none!important; }
 @keyframes beat {
-  0%,100%{ transform:scale(1); }
-  15%    { transform:scale(1.12); }
-  30%    { transform:scale(1); }
-  45%    { transform:scale(1.08); }
+  0%,100% { transform:scale(1); }
+  15%     { transform:scale(1.12); }
+  30%     { transform:scale(1); }
+  45%     { transform:scale(1.08); }
 }
 
-/* ══ ESCENA 2 ══ */
-#drop-heart {
-  position:absolute;
-  filter:drop-shadow(0 6px 18px rgba(176,32,32,0.5));
-}
+/* ── Escena 2 ── */
+#drop-heart { position:absolute; }
 
-/* ══ ESCENA 3 ══ */
-#s3 { align-items:flex-end; justify-content:center; }
-#tree-stage {
-  width:min(440px,96vw); height:100vh;
+/* ── Escena 3 ── */
+#s3 { align-items:flex-end; }
+#tree-wrap {
+  width:min(420px,94vw); height:100vh;
   position:relative;
-  display:flex; align-items:flex-end; justify-content:center;
 }
-#tree-main { width:100%; height:100%; overflow:visible; position:absolute; bottom:0; }
+#tree-svg {
+  width:100%; height:100%;
+  position:absolute; bottom:0;
+  overflow:visible;
+}
 
-/* ══ ESCENA 4 ══ */
-#s4 { align-items:flex-end; justify-content:center; }
-#s4-inner { width:100%; height:100%; position:relative; display:flex; align-items:flex-end; justify-content:flex-end; }
+/* ── Escena 4 ── */
+#s4 { align-items:flex-end; justify-content:flex-start; }
+#s4-inner { width:100%; height:100%; position:relative; }
 
-#tree-side {
-  width:min(330px,58vw); height:100vh;
+#tree-right {
   position:absolute; right:0; bottom:0;
-  transform:translateX(105%);
+  width:min(310px,55vw); height:100vh;
+  transform:translateX(108%);
   transition:transform 1.4s cubic-bezier(0.16,1,0.3,1);
 }
-#tree-side.in { transform:translateX(0); }
-#tree-side svg { width:100%; height:100%; overflow:visible; }
+#tree-right.in { transform:translateX(0); }
+#tree-right svg { width:100%; height:100%; overflow:visible; }
 
-#counter-wrap {
+/* ── Contador ── */
+#counter {
   position:absolute;
-  left:clamp(14px,5vw,48px); top:50%;
+  left:clamp(16px,5vw,50px); top:50%;
   transform:translateY(-50%);
-  opacity:0; transition:opacity 1s 1.5s;
+  opacity:0; transition:opacity 1s 1.4s;
 }
-#counter-wrap.in { opacity:1; }
+#counter.in { opacity:1; }
 
-.cnt-intro {
+.c-label {
   font-family:'Dancing Script',cursive;
-  font-size:clamp(0.85rem,3.2vw,1.15rem);
-  color:var(--r2); display:block; margin-bottom:6px;
+  font-size:clamp(0.85rem,3vw,1.1rem);
+  color:var(--r2); display:block; margin-bottom:5px;
 }
-.cnt-name {
+.c-name {
   font-family:'Dancing Script',cursive;
-  font-size:clamp(1.6rem,7vw,2.4rem);
+  font-size:clamp(1.5rem,6.5vw,2.3rem);
   color:var(--r1); display:block; line-height:1.1;
-  margin-bottom:clamp(12px,3vw,22px);
+  margin-bottom:clamp(10px,3vw,20px);
 }
-.time-row { display:flex; gap:clamp(8px,2.5vw,18px); align-items:flex-end; }
-.tu { text-align:center; }
-.tv {
+.c-row { display:flex; gap:clamp(8px,2.5vw,16px); }
+.c-unit { text-align:center; }
+.c-val {
   display:block;
   font-family:'Playfair Display',serif; font-weight:700;
-  font-size:clamp(2rem,8vw,3rem); color:var(--r1); line-height:1; min-width:2ch;
+  font-size:clamp(1.9rem,7.5vw,2.8rem); color:var(--r1);
+  line-height:1; min-width:2ch;
 }
-.tl {
+.c-lbl {
   font-family:'Dancing Script',cursive;
-  font-size:clamp(0.65rem,2.5vw,0.85rem);
-  color:var(--r2); letter-spacing:0.06em;
+  font-size:clamp(0.6rem,2.2vw,0.8rem); color:var(--r2);
 }
 
-/* ══ HOJAS CAYENDO ══ */
+/* ── Hojas cayendo ── */
 .fl {
   position:fixed; pointer-events:none; z-index:20;
   will-change:transform,opacity;
@@ -137,47 +136,48 @@ html, body {
 }
 @keyframes fall {
   0%   { transform:translate(0,0) rotate(0deg); opacity:1; }
-  85%  { opacity:0.85; }
+  80%  { opacity:0.9; }
   100% { transform:translate(var(--dx),var(--dy)) rotate(var(--dr)); opacity:0; }
 }
 
-/* ══ RESTART ══ */
+/* ── Restart ── */
 #restart {
   position:fixed; bottom:clamp(16px,4vw,28px); right:clamp(16px,4vw,28px);
-  z-index:50;
-  background:var(--r2); color:#fff; border:none; border-radius:50px;
+  z-index:50; background:var(--r2); color:#fff;
+  border:none; border-radius:50px;
   padding:clamp(8px,2vw,12px) clamp(18px,4vw,26px);
   font-family:'Dancing Script',cursive;
   font-size:clamp(0.9rem,3.5vw,1.1rem);
   cursor:pointer; opacity:0; pointer-events:none;
   transition:opacity 0.5s, transform 0.15s;
-  box-shadow:0 4px 18px rgba(176,32,32,0.35);
+  box-shadow:0 4px 18px rgba(176,32,32,0.3);
   touch-action:manipulation;
 }
 #restart.in { opacity:1; pointer-events:all; }
 #restart:active { transform:scale(0.94); }
 
+/* ── Línea suelo ── */
 #ground {
   position:fixed; bottom:28%; left:0; right:0; height:2px; z-index:5;
-  background:linear-gradient(90deg,transparent 0%,var(--r4) 30%,var(--r2) 50%,var(--r4) 70%,transparent 100%);
+  background:linear-gradient(90deg,transparent,var(--r4) 30%,var(--r2) 50%,var(--r4) 70%,transparent);
   opacity:0; transform:scaleX(0); transform-origin:center;
   transition:opacity 0.3s, transform 0.5s cubic-bezier(0.2,0.8,0.4,1);
 }
 </style>
 </head>
 <body>
-<div class="bg-layer"></div>
+<div class="bg"></div>
 <div id="ground"></div>
 
-<!-- ══ ESCENA 1 ══ -->
+<!-- ══════════ ESCENA 1: CORAZÓN ══════════ -->
 <div class="scene active" id="s1">
   <p class="hint">Toca el corazón ♥</p>
-  <button id="heart-btn" aria-label="Corazón">
+  <button id="heart-btn" aria-label="Corazón San Valentín">
     <svg style="width:clamp(110px,28vw,145px);height:auto" viewBox="0 0 140 130" xmlns="http://www.w3.org/2000/svg">
       <defs>
         <radialGradient id="hg" cx="38%" cy="28%" r="72%">
-          <stop offset="0%"  stop-color="#FF6B6B"/>
-          <stop offset="45%" stop-color="#C0392B"/>
+          <stop offset="0%"   stop-color="#FF6B6B"/>
+          <stop offset="45%"  stop-color="#C0392B"/>
           <stop offset="100%" stop-color="#7B0000"/>
         </radialGradient>
         <filter id="hf" x="-20%" y="-20%" width="140%" height="140%">
@@ -196,13 +196,13 @@ html, body {
   </button>
 </div>
 
-<!-- ══ ESCENA 2 ══ -->
+<!-- ══════════ ESCENA 2: CAÍDA ══════════ -->
 <div class="scene" id="s2">
   <svg id="drop-heart" style="width:clamp(70px,20vw,100px)" viewBox="0 0 140 130" xmlns="http://www.w3.org/2000/svg">
     <defs>
       <radialGradient id="hg2" cx="38%" cy="28%" r="72%">
-        <stop offset="0%"  stop-color="#FF6B6B"/>
-        <stop offset="45%" stop-color="#C0392B"/>
+        <stop offset="0%"   stop-color="#FF6B6B"/>
+        <stop offset="45%"  stop-color="#C0392B"/>
         <stop offset="100%" stop-color="#7B0000"/>
       </radialGradient>
     </defs>
@@ -212,578 +212,529 @@ html, body {
   </svg>
 </div>
 
-<!-- ══ ESCENA 3 (árbol con hojas generadas por JS) ══ -->
+<!-- ══════════ ESCENA 3: ÁRBOL ══════════ -->
 <div class="scene" id="s3">
-  <div id="tree-stage">
-    <svg id="tree-main" viewBox="0 0 440 740" xmlns="http://www.w3.org/2000/svg" overflow="visible">
+  <div id="tree-wrap">
+    <svg id="tree-svg" viewBox="0 0 420 730" xmlns="http://www.w3.org/2000/svg">
       <defs>
         <linearGradient id="tG" x1="0%" y1="0%" x2="100%" y2="0%">
           <stop offset="0%"   stop-color="#2E1505"/>
-          <stop offset="30%"  stop-color="#5A3010"/>
-          <stop offset="65%"  stop-color="#8B5A2B"/>
+          <stop offset="35%"  stop-color="#5A3010"/>
+          <stop offset="68%"  stop-color="#8B5A2B"/>
           <stop offset="100%" stop-color="#3A1F05"/>
         </linearGradient>
-        <linearGradient id="bG" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%"   stop-color="#4A2A0A"/>
-          <stop offset="100%" stop-color="#9B6A30"/>
-        </linearGradient>
-        <!-- Hoja-corazón bien definida -->
-        <symbol id="LH" viewBox="-1 -1 22 20" overflow="visible">
-          <path d="M10 17C10 17 0.5 10.5 0.5 5.2C0.5 2.3 2.8 0 5.8 0C7.5 0 9 0.85 10 2.1C11 0.85 12.5 0 14.2 0C17.2 0 19.5 2.3 19.5 5.2C19.5 10.5 10 17 10 17Z"/>
-        </symbol>
       </defs>
 
-      <!-- ══ TRONCO volumétrico ══ -->
-      <!-- Sombra lateral -->
-      <path class="tp" d="M228 740C226 700 224 650 222 595C220 540 218 485 217 435C216 390 215 350 214 310C213 272 211 240 210 208"
-            stroke="#1A0A02" stroke-width="24" fill="none" stroke-linecap="round"
-            style="stroke-dasharray:700;stroke-dashoffset:700"/>
-      <!-- Tronco principal -->
-      <path class="tp" d="M220 740C218 700 216 650 214 595C212 540 210 485 209 435C208 390 207 350 206 310C205 272 203 240 202 208"
-            stroke="url(#tG)" stroke-width="34" fill="none" stroke-linecap="round"
-            style="stroke-dasharray:700;stroke-dashoffset:700"/>
-      <!-- Brillo izquierdo -->
-      <path class="tp" d="M212 740C210 700 208 650 207 595C206 540 204 485 204 435C203 390 202 350 201 310C200 272 199 240 198 208"
-            stroke="#9B6A30" stroke-width="9" fill="none" stroke-linecap="round" opacity="0.4"
-            style="stroke-dasharray:700;stroke-dashoffset:700"/>
-
+      <!-- Tronco, 3 capas -->
+      <path class="T" d="M218 730C216 690 214 645 212 592C210 540 208 487 207 438C206 393 205 353 204 313C203 276 202 246 200 215"
+            stroke="#1E0C02" stroke-width="22" fill="none" stroke-linecap="round" style="stroke-dasharray:700;stroke-dashoffset:700"/>
+      <path class="T" d="M210 730C208 690 206 645 204 592C202 540 200 487 199 438C198 393 197 353 196 313C195 276 194 246 192 215"
+            stroke="url(#tG)" stroke-width="32" fill="none" stroke-linecap="round" style="stroke-dasharray:700;stroke-dashoffset:700"/>
+      <path class="T" d="M203 730C202 690 200 645 199 592C198 540 197 487 196 438C195 393 195 353 194 313C193 276 192 246 191 215"
+            stroke="#8B5A2B" stroke-width="9" fill="none" stroke-linecap="round" opacity="0.38" style="stroke-dasharray:700;stroke-dashoffset:700"/>
       <!-- Raíces -->
-      <path class="tp" d="M218 740C205 730 185 738 168 736" stroke="#2E1505" stroke-width="12" fill="none" stroke-linecap="round" style="stroke-dasharray:100;stroke-dashoffset:100"/>
-      <path class="tp" d="M222 740C236 732 256 738 272 736" stroke="#2E1505" stroke-width="10" fill="none" stroke-linecap="round" style="stroke-dasharray:100;stroke-dashoffset:100"/>
-      <path class="tp" d="M220 740C210 734 195 740 182 738" stroke="#3A1F05" stroke-width="7"  fill="none" stroke-linecap="round" style="stroke-dasharray:80;stroke-dashoffset:80"/>
+      <path class="T" d="M208 730C196 722 176 728 160 726" stroke="#2E1505" stroke-width="11" fill="none" stroke-linecap="round" style="stroke-dasharray:80;stroke-dashoffset:80"/>
+      <path class="T" d="M212 730C224 722 244 728 260 726" stroke="#2E1505" stroke-width="9"  fill="none" stroke-linecap="round" style="stroke-dasharray:80;stroke-dashoffset:80"/>
 
-      <!-- ══ RAMAS (paths curvados = orgánicos) ══ -->
-      <!-- Nivel 1 – muy gruesas -->
-      <path class="br" d="M210 590C192 570 168 550 138 530C118 516 94 504 66 492"
-            stroke="#4A2A0A" stroke-width="20" fill="none" stroke-linecap="round" style="stroke-dasharray:220;stroke-dashoffset:220"/>
-      <path class="br" d="M214 578C234 558 260 540 288 524C310 510 334 500 360 490"
-            stroke="#4A2A0A" stroke-width="20" fill="none" stroke-linecap="round" style="stroke-dasharray:220;stroke-dashoffset:220"/>
+      <!-- Ramas nivel 1 -->
+      <path class="B" d="M207 585C188 565 162 546 130 528C108 514 84 503 58 492" stroke="#4A2A0A" stroke-width="18" fill="none" stroke-linecap="round" style="stroke-dasharray:220;stroke-dashoffset:220"/>
+      <path class="B" d="M211 573C230 553 256 536 282 520C304 507 328 497 354 487" stroke="#4A2A0A" stroke-width="18" fill="none" stroke-linecap="round" style="stroke-dasharray:220;stroke-dashoffset:220"/>
+      <!-- Ramas nivel 2 -->
+      <path class="B" d="M205 497C185 478 158 459 126 443C104 429 80 419 52 409" stroke="#5A3010" stroke-width="13" fill="none" stroke-linecap="round" style="stroke-dasharray:200;stroke-dashoffset:200"/>
+      <path class="B" d="M209 486C227 467 252 450 276 435C298 421 322 411 348 403" stroke="#5A3010" stroke-width="13" fill="none" stroke-linecap="round" style="stroke-dasharray:200;stroke-dashoffset:200"/>
+      <!-- Ramas nivel 3 -->
+      <path class="B" d="M202 413C183 392 156 371 126 355C104 341 78 329 50 319" stroke="#6B3F15" stroke-width="10" fill="none" stroke-linecap="round" style="stroke-dasharray:200;stroke-dashoffset:200"/>
+      <path class="B" d="M207 402C224 381 248 361 271 345C293 330 317 319 343 309" stroke="#6B3F15" stroke-width="10" fill="none" stroke-linecap="round" style="stroke-dasharray:200;stroke-dashoffset:200"/>
+      <!-- Rama central -->
+      <path class="B" d="M203 355C201 333 199 308 197 280C195 254 193 232 191 208" stroke="#5A3010" stroke-width="12" fill="none" stroke-linecap="round" style="stroke-dasharray:200;stroke-dashoffset:200"/>
+      <!-- Sub-ramas izquierda -->
+      <path class="B" d="M58 492C42 476 24 460 8 444"   stroke="#6B3F15" stroke-width="8" fill="none" stroke-linecap="round" style="stroke-dasharray:100;stroke-dashoffset:100"/>
+      <path class="B" d="M58 492C66 474 80 459 97 448"  stroke="#6B3F15" stroke-width="8" fill="none" stroke-linecap="round" style="stroke-dasharray:100;stroke-dashoffset:100"/>
+      <path class="B" d="M52 409C36 391 18 375 2 359"   stroke="#7B4F22" stroke-width="6" fill="none" stroke-linecap="round" style="stroke-dasharray:80;stroke-dashoffset:80"/>
+      <path class="B" d="M52 409C62 391 77 376 95 366"  stroke="#7B4F22" stroke-width="6" fill="none" stroke-linecap="round" style="stroke-dasharray:80;stroke-dashoffset:80"/>
+      <path class="B" d="M50 319C34 301 16 284 2 268"   stroke="#8B5F2A" stroke-width="4" fill="none" stroke-linecap="round" style="stroke-dasharray:80;stroke-dashoffset:80"/>
+      <path class="B" d="M50 319C62 302 78 286 97 276"  stroke="#8B5F2A" stroke-width="4" fill="none" stroke-linecap="round" style="stroke-dasharray:80;stroke-dashoffset:80"/>
+      <!-- Sub-ramas derecha -->
+      <path class="B" d="M354 487C369 471 385 456 400 442" stroke="#6B3F15" stroke-width="8" fill="none" stroke-linecap="round" style="stroke-dasharray:100;stroke-dashoffset:100"/>
+      <path class="B" d="M354 487C344 469 330 455 312 444" stroke="#6B3F15" stroke-width="8" fill="none" stroke-linecap="round" style="stroke-dasharray:100;stroke-dashoffset:100"/>
+      <path class="B" d="M348 403C363 386 380 370 396 355" stroke="#7B4F22" stroke-width="6" fill="none" stroke-linecap="round" style="stroke-dasharray:80;stroke-dashoffset:80"/>
+      <path class="B" d="M348 403C336 386 320 371 302 361" stroke="#7B4F22" stroke-width="6" fill="none" stroke-linecap="round" style="stroke-dasharray:80;stroke-dashoffset:80"/>
+      <path class="B" d="M343 309C358 292 374 276 390 261" stroke="#8B5F2A" stroke-width="4" fill="none" stroke-linecap="round" style="stroke-dasharray:80;stroke-dashoffset:80"/>
+      <path class="B" d="M343 309C330 292 314 277 296 267" stroke="#8B5F2A" stroke-width="4" fill="none" stroke-linecap="round" style="stroke-dasharray:80;stroke-dashoffset:80"/>
+      <!-- Cima -->
+      <path class="B" d="M191 208C185 190 177 170 171 148C165 128 161 108 159 86" stroke="#6B3F15" stroke-width="8" fill="none" stroke-linecap="round" style="stroke-dasharray:160;stroke-dashoffset:160"/>
+      <path class="B" d="M191 208C202 191 215 173 225 156" stroke="#7B4F22" stroke-width="4" fill="none" stroke-linecap="round" style="stroke-dasharray:80;stroke-dashoffset:80"/>
+      <path class="B" d="M191 208C179 191 165 173 154 156" stroke="#7B4F22" stroke-width="4" fill="none" stroke-linecap="round" style="stroke-dasharray:80;stroke-dashoffset:80"/>
+      <path class="B" d="M159 86C153 68 148 50 146 32"    stroke="#8B5F2A" stroke-width="4" fill="none" stroke-linecap="round" style="stroke-dasharray:70;stroke-dashoffset:70"/>
+      <path class="B" d="M159 86C167 69 177 52 185 36"    stroke="#9B6F3A" stroke-width="3" fill="none" stroke-linecap="round" style="stroke-dasharray:60;stroke-dashoffset:60"/>
+      <path class="B" d="M159 86C150 69 139 52 129 36"    stroke="#9B6F3A" stroke-width="3" fill="none" stroke-linecap="round" style="stroke-dasharray:60;stroke-dashoffset:60"/>
 
-      <!-- Nivel 2 – gruesas -->
-      <path class="br" d="M208 500C188 480 162 460 132 444C110 430 86 420 58 410"
-            stroke="#5A3010" stroke-width="15" fill="none" stroke-linecap="round" style="stroke-dasharray:220;stroke-dashoffset:220"/>
-      <path class="br" d="M212 490C230 470 255 452 280 436C302 422 326 412 352 404"
-            stroke="#5A3010" stroke-width="15" fill="none" stroke-linecap="round" style="stroke-dasharray:220;stroke-dashoffset:220"/>
-
-      <!-- Nivel 3 – medias -->
-      <path class="br" d="M205 415C186 394 160 372 130 356C108 342 82 330 54 320"
-            stroke="#6B3F15" stroke-width="11" fill="none" stroke-linecap="round" style="stroke-dasharray:220;stroke-dashoffset:220"/>
-      <path class="br" d="M210 404C228 383 252 362 276 346C298 332 322 320 348 310"
-            stroke="#6B3F15" stroke-width="11" fill="none" stroke-linecap="round" style="stroke-dasharray:220;stroke-dashoffset:220"/>
-
-      <!-- Centro sube vertical -->
-      <path class="br" d="M206 360C204 338 202 312 200 284C198 258 196 236 194 210"
-            stroke="#5A3010" stroke-width="13" fill="none" stroke-linecap="round" style="stroke-dasharray:200;stroke-dashoffset:200"/>
-
-      <!-- Nivel 4 – delgadas -->
-      <path class="br" d="M202 335C182 312 156 290 126 274C104 260 78 248 50 238"
-            stroke="#7B4F22" stroke-width="8" fill="none" stroke-linecap="round" style="stroke-dasharray:200;stroke-dashoffset:200"/>
-      <path class="br" d="M208 324C226 302 250 280 272 264C294 250 318 238 344 228"
-            stroke="#7B4F22" stroke-width="8" fill="none" stroke-linecap="round" style="stroke-dasharray:200;stroke-dashoffset:200"/>
-
-      <!-- Sub-ramas izquierda baja -->
-      <path class="br" d="M66 492C50 476 32 460 16 444" stroke="#6B3F15" stroke-width="9" fill="none" stroke-linecap="round" style="stroke-dasharray:100;stroke-dashoffset:100"/>
-      <path class="br" d="M66 492C74 472 88 456 106 444" stroke="#6B3F15" stroke-width="9" fill="none" stroke-linecap="round" style="stroke-dasharray:100;stroke-dashoffset:100"/>
-      <path class="br" d="M58 410C42 392 24 376 8 360"   stroke="#7B4F22" stroke-width="7" fill="none" stroke-linecap="round" style="stroke-dasharray:80;stroke-dashoffset:80"/>
-      <path class="br" d="M58 410C68 392 82 376 100 366" stroke="#7B4F22" stroke-width="7" fill="none" stroke-linecap="round" style="stroke-dasharray:80;stroke-dashoffset:80"/>
-      <path class="br" d="M54 320C38 302 20 284 4 268"   stroke="#8B5F2A" stroke-width="5" fill="none" stroke-linecap="round" style="stroke-dasharray:80;stroke-dashoffset:80"/>
-      <path class="br" d="M54 320C66 302 82 285 102 275" stroke="#8B5F2A" stroke-width="5" fill="none" stroke-linecap="round" style="stroke-dasharray:80;stroke-dashoffset:80"/>
-      <path class="br" d="M50 238C34 220 16 202 2 184"   stroke="#9B6F3A" stroke-width="4" fill="none" stroke-linecap="round" style="stroke-dasharray:80;stroke-dashoffset:80"/>
-      <path class="br" d="M50 238C64 220 82 204 102 192" stroke="#9B6F3A" stroke-width="4" fill="none" stroke-linecap="round" style="stroke-dasharray:80;stroke-dashoffset:80"/>
-
-      <!-- Sub-ramas derecha baja -->
-      <path class="br" d="M360 490C376 474 392 458 408 444" stroke="#6B3F15" stroke-width="9" fill="none" stroke-linecap="round" style="stroke-dasharray:100;stroke-dashoffset:100"/>
-      <path class="br" d="M360 490C350 472 336 456 318 444" stroke="#6B3F15" stroke-width="9" fill="none" stroke-linecap="round" style="stroke-dasharray:100;stroke-dashoffset:100"/>
-      <path class="br" d="M352 404C368 386 384 370 400 356" stroke="#7B4F22" stroke-width="7" fill="none" stroke-linecap="round" style="stroke-dasharray:80;stroke-dashoffset:80"/>
-      <path class="br" d="M352 404C340 386 326 370 308 360" stroke="#7B4F22" stroke-width="7" fill="none" stroke-linecap="round" style="stroke-dasharray:80;stroke-dashoffset:80"/>
-      <path class="br" d="M348 310C364 292 382 274 398 258" stroke="#8B5F2A" stroke-width="5" fill="none" stroke-linecap="round" style="stroke-dasharray:80;stroke-dashoffset:80"/>
-      <path class="br" d="M348 310C336 292 320 276 300 266" stroke="#8B5F2A" stroke-width="5" fill="none" stroke-linecap="round" style="stroke-dasharray:80;stroke-dashoffset:80"/>
-      <path class="br" d="M344 228C360 210 378 192 394 174" stroke="#9B6F3A" stroke-width="4" fill="none" stroke-linecap="round" style="stroke-dasharray:80;stroke-dashoffset:80"/>
-      <path class="br" d="M344 228C330 210 314 194 296 182" stroke="#9B6F3A" stroke-width="4" fill="none" stroke-linecap="round" style="stroke-dasharray:80;stroke-dashoffset:80"/>
-
-      <!-- Cima del árbol -->
-      <path class="br" d="M194 210C188 192 180 172 174 150C168 130 164 110 162 88"
-            stroke="#6B3F15" stroke-width="9" fill="none" stroke-linecap="round" style="stroke-dasharray:160;stroke-dashoffset:160"/>
-      <path class="br" d="M194 210C206 192 220 174 230 156" stroke="#7B4F22" stroke-width="5" fill="none" stroke-linecap="round" style="stroke-dasharray:80;stroke-dashoffset:80"/>
-      <path class="br" d="M194 210C180 192 166 174 154 156" stroke="#7B4F22" stroke-width="5" fill="none" stroke-linecap="round" style="stroke-dasharray:80;stroke-dashoffset:80"/>
-      <path class="br" d="M162 88C156 70 150 52 148 34"    stroke="#8B5F2A" stroke-width="5" fill="none" stroke-linecap="round" style="stroke-dasharray:80;stroke-dashoffset:80"/>
-      <path class="br" d="M162 88C170 70 180 52 188 36"    stroke="#9B6F3A" stroke-width="3" fill="none" stroke-linecap="round" style="stroke-dasharray:60;stroke-dashoffset:60"/>
-      <path class="br" d="M162 88C152 70 140 52 130 36"    stroke="#9B6F3A" stroke-width="3" fill="none" stroke-linecap="round" style="stroke-dasharray:60;stroke-dashoffset:60"/>
-
-      <!-- Hojas generadas por JS aquí -->
-      <g id="leaves" opacity="0"></g>
+      <!-- Hojas generadas por JS -->
+      <g id="leaves-s3" opacity="0"></g>
     </svg>
   </div>
 </div>
 
-<!-- ══ ESCENA 4 ══ -->
+<!-- ══════════ ESCENA 4: CONTADOR + ÁRBOL ══════════ -->
 <div class="scene" id="s4">
   <div id="s4-inner">
-    <div id="tree-side">
-      <!-- SVG igual al árbol escena 3 pero compacto, hojas también por JS -->
-      <svg id="tree-side-svg" viewBox="0 0 340 720" xmlns="http://www.w3.org/2000/svg" overflow="visible">
+
+    <div id="tree-right">
+      <svg viewBox="0 0 320 720" xmlns="http://www.w3.org/2000/svg" overflow="visible">
         <defs>
-          <linearGradient id="tG3" x1="0%" y1="0%" x2="100%" y2="0%">
+          <linearGradient id="tG4" x1="0%" y1="0%" x2="100%" y2="0%">
             <stop offset="0%"   stop-color="#2E1505"/>
             <stop offset="35%"  stop-color="#5A3010"/>
-            <stop offset="65%"  stop-color="#8B5A2B"/>
+            <stop offset="68%"  stop-color="#8B5A2B"/>
             <stop offset="100%" stop-color="#3A1F05"/>
           </linearGradient>
-          <symbol id="LH3" viewBox="-1 -1 22 20" overflow="visible">
-            <path d="M10 17C10 17 0.5 10.5 0.5 5.2C0.5 2.3 2.8 0 5.8 0C7.5 0 9 0.85 10 2.1C11 0.85 12.5 0 14.2 0C17.2 0 19.5 2.3 19.5 5.2C19.5 10.5 10 17 10 17Z"/>
-          </symbol>
         </defs>
-        <!-- Tronco escena 4 -->
-        <path d="M178 720C176 680 174 635 173 584C172 533 170 480 169 432C168 388 167 350 166 312C165 276 164 244 163 212"
-              stroke="#1A0A02" stroke-width="20" fill="none" stroke-linecap="round"/>
-        <path d="M170 720C168 680 166 635 165 584C164 533 162 480 161 432C160 388 159 350 158 312C157 276 156 244 155 212"
-              stroke="url(#tG3)" stroke-width="28" fill="none" stroke-linecap="round"/>
-        <path d="M163 720C162 680 160 635 159 584C158 533 157 480 157 432C156 388 155 350 154 312C153 276 152 244 151 212"
-              stroke="#8B5A2B" stroke-width="8" fill="none" stroke-linecap="round" opacity="0.4"/>
-        <!-- Raíces s4 -->
-        <path d="M168 720C157 712 140 718 126 716" stroke="#2E1505" stroke-width="9" fill="none" stroke-linecap="round"/>
-        <path d="M172 720C182 713 198 718 212 716" stroke="#2E1505" stroke-width="8" fill="none" stroke-linecap="round"/>
-        <!-- Ramas s4 -->
-        <path d="M163 582C148 564 128 548 104 534C86 522 66 512 44 504"    stroke="#4A2A0A" stroke-width="16" fill="none" stroke-linecap="round"/>
-        <path d="M166 570C183 552 206 536 228 522C248 510 270 500 294 492" stroke="#4A2A0A" stroke-width="16" fill="none" stroke-linecap="round"/>
-        <path d="M161 495C146 476 124 458 98 444C78 432 56 422 32 414"    stroke="#5A3010" stroke-width="12" fill="none" stroke-linecap="round"/>
-        <path d="M164 484C180 465 203 448 224 434C244 422 266 412 290 404" stroke="#5A3010" stroke-width="12" fill="none" stroke-linecap="round"/>
-        <path d="M158 408C144 388 122 368 96 354C76 342 52 332 26 322"    stroke="#6B3F15" stroke-width="9" fill="none" stroke-linecap="round"/>
-        <path d="M162 397C178 377 200 358 220 344C240 330 262 320 286 312" stroke="#6B3F15" stroke-width="9" fill="none" stroke-linecap="round"/>
-        <path d="M155 326C140 306 118 286 92 272C72 260 48 250 22 242"    stroke="#7B4F22" stroke-width="6" fill="none" stroke-linecap="round"/>
-        <path d="M159 316C174 296 195 277 214 264C234 250 256 240 280 232" stroke="#7B4F22" stroke-width="6" fill="none" stroke-linecap="round"/>
-        <!-- Sub-ramas s4 -->
-        <path d="M44 504C30 490 14 476 2 462"   stroke="#6B3F15" stroke-width="7" fill="none" stroke-linecap="round"/>
-        <path d="M44 504C54 486 68 472 86 462"  stroke="#6B3F15" stroke-width="7" fill="none" stroke-linecap="round"/>
-        <path d="M294 492C308 478 322 464 336 452" stroke="#6B3F15" stroke-width="7" fill="none" stroke-linecap="round"/>
-        <path d="M32 414C18 396 4 380 -6 362"   stroke="#7B4F22" stroke-width="5" fill="none" stroke-linecap="round"/>
-        <path d="M290 404C304 386 318 370 330 354" stroke="#7B4F22" stroke-width="5" fill="none" stroke-linecap="round"/>
-        <path d="M26 322C12 304 -2 286 -12 268"  stroke="#8B5F2A" stroke-width="4" fill="none" stroke-linecap="round"/>
-        <path d="M22 242C8 224 -4 206 -12 188"   stroke="#9B6F3A" stroke-width="3" fill="none" stroke-linecap="round"/>
-        <path d="M280 232C294 214 308 196 318 178" stroke="#9B6F3A" stroke-width="3" fill="none" stroke-linecap="round"/>
-        <!-- Cima s4 -->
-        <path d="M155 212C150 194 144 173 140 151C136 130 133 108 131 86"
-              stroke="#6B3F15" stroke-width="7" fill="none" stroke-linecap="round"/>
-        <path d="M155 212C164 194 175 175 183 158" stroke="#7B4F22" stroke-width="4" fill="none" stroke-linecap="round"/>
-        <path d="M155 212C144 194 133 175 123 158" stroke="#7B4F22" stroke-width="4" fill="none" stroke-linecap="round"/>
-        <path d="M131 86C126 68 121 50 119 32"   stroke="#8B5F2A" stroke-width="4" fill="none" stroke-linecap="round"/>
-        <path d="M131 86C139 68 148 50 154 34"   stroke="#9B6F3A" stroke-width="3" fill="none" stroke-linecap="round"/>
-        <path d="M131 86C122 68 112 50 104 34"   stroke="#9B6F3A" stroke-width="3" fill="none" stroke-linecap="round"/>
-
-        <g id="leaves4"></g>
+        <!-- Tronco -->
+        <path d="M168 720C166 680 164 636 162 583C160 531 158 479 157 432C156 388 155 350 154 312C153 276 152 246 150 215"
+              stroke="#1E0C02" stroke-width="18" fill="none" stroke-linecap="round"/>
+        <path d="M160 720C158 680 156 636 154 583C152 531 150 479 149 432C148 388 147 350 146 312C145 276 144 246 142 215"
+              stroke="url(#tG4)" stroke-width="26" fill="none" stroke-linecap="round"/>
+        <path d="M153 720C152 680 151 636 150 583C149 531 149 479 148 432C147 388 147 350 146 312C145 276 145 246 144 215"
+              stroke="#8B5A2B" stroke-width="8" fill="none" stroke-linecap="round" opacity="0.36"/>
+        <!-- Raíces -->
+        <path d="M158 720C148 713 132 718 118 716" stroke="#2E1505" stroke-width="9"  fill="none" stroke-linecap="round"/>
+        <path d="M162 720C172 713 188 718 202 716" stroke="#2E1505" stroke-width="8"  fill="none" stroke-linecap="round"/>
+        <!-- Nivel 1 -->
+        <path d="M157 573C140 554 117 537 90 521C71 509 50 499 28 490"    stroke="#4A2A0A" stroke-width="14" fill="none" stroke-linecap="round"/>
+        <path d="M161 562C178 543 202 527 224 513C244 500 266 491 290 483" stroke="#4A2A0A" stroke-width="14" fill="none" stroke-linecap="round"/>
+        <!-- Nivel 2 -->
+        <path d="M154 488C138 469 114 451 86 437C67 425 45 415 22 407"    stroke="#5A3010" stroke-width="10" fill="none" stroke-linecap="round"/>
+        <path d="M158 478C175 459 198 443 218 429C238 416 260 407 284 399" stroke="#5A3010" stroke-width="10" fill="none" stroke-linecap="round"/>
+        <!-- Nivel 3 -->
+        <path d="M151 406C135 386 111 366 83 352C63 340 40 329 16 321"    stroke="#6B3F15" stroke-width="7"  fill="none" stroke-linecap="round"/>
+        <path d="M155 396C171 376 193 357 213 343C233 329 255 319 279 311" stroke="#6B3F15" stroke-width="7"  fill="none" stroke-linecap="round"/>
+        <!-- Central -->
+        <path d="M151 350C149 328 147 303 145 276C143 250 141 228 139 205" stroke="#5A3010" stroke-width="9"  fill="none" stroke-linecap="round"/>
+        <!-- Sub-ramas izq -->
+        <path d="M28 490C14 475 0 461 -12 447"    stroke="#6B3F15" stroke-width="6" fill="none" stroke-linecap="round"/>
+        <path d="M28 490C36 473 50 459 65 449"    stroke="#6B3F15" stroke-width="6" fill="none" stroke-linecap="round"/>
+        <path d="M22 407C8 390 -6 374 -18 359"    stroke="#7B4F22" stroke-width="5" fill="none" stroke-linecap="round"/>
+        <path d="M16 321C4 304 -8 288 -18 272"    stroke="#8B5F2A" stroke-width="3" fill="none" stroke-linecap="round"/>
+        <!-- Sub-ramas der -->
+        <path d="M290 483C303 468 316 454 328 441" stroke="#6B3F15" stroke-width="6" fill="none" stroke-linecap="round"/>
+        <path d="M284 399C296 383 310 368 322 354" stroke="#7B4F22" stroke-width="5" fill="none" stroke-linecap="round"/>
+        <path d="M279 311C291 294 305 278 315 262" stroke="#8B5F2A" stroke-width="3" fill="none" stroke-linecap="round"/>
+        <!-- Cima -->
+        <path d="M139 205C133 187 126 167 121 146C116 126 113 106 111 84" stroke="#6B3F15" stroke-width="6" fill="none" stroke-linecap="round"/>
+        <path d="M139 205C149 188 160 170 168 153" stroke="#7B4F22" stroke-width="3" fill="none" stroke-linecap="round"/>
+        <path d="M139 205C128 188 116 170 106 153" stroke="#7B4F22" stroke-width="3" fill="none" stroke-linecap="round"/>
+        <path d="M111 84C106 66 102 48 100 30"     stroke="#8B5F2A" stroke-width="3" fill="none" stroke-linecap="round"/>
+        <path d="M111 84C118 67 126 50 132 34"     stroke="#9B6F3A" stroke-width="2" fill="none" stroke-linecap="round"/>
+        <path d="M111 84C103 67 93 50 85 34"       stroke="#9B6F3A" stroke-width="2" fill="none" stroke-linecap="round"/>
+        <!-- Hojas por JS -->
+        <g id="leaves-s4"></g>
       </svg>
     </div>
 
-    <div id="counter-wrap">
-      <span class="cnt-intro">Mi amor por ti comenzó hace…</span>
-      <span class="cnt-name" id="love-name">Para ti ♥</span>
-      <div class="time-row">
-        <div class="tu"><span class="tv" id="cd">---</span><span class="tl">días</span></div>
-        <div class="tu"><span class="tv" id="ch">--</span><span class="tl">horas</span></div>
-        <div class="tu"><span class="tv" id="cm">--</span><span class="tl">minutos</span></div>
-        <div class="tu"><span class="tv" id="cs">--</span><span class="tl">segundos</span></div>
+    <!-- Contador -->
+    <div id="counter">
+      <span class="c-label">Mi amor por ti comenzó hace…</span>
+      <span class="c-name" id="c-name">Para ti ♥</span>
+      <div class="c-row">
+        <div class="c-unit"><span class="c-val" id="cd">--</span><span class="c-lbl">días</span></div>
+        <div class="c-unit"><span class="c-val" id="ch">--</span><span class="c-lbl">horas</span></div>
+        <div class="c-unit"><span class="c-val" id="cm">--</span><span class="c-lbl">minutos</span></div>
+        <div class="c-unit"><span class="c-val" id="cs">--</span><span class="c-lbl">segundos</span></div>
       </div>
     </div>
+
   </div>
 </div>
 
-<button id="restart" onclick="init()">↺ Repetir</button>
+<button id="restart" onclick="App.init()">↺ Repetir</button>
 
 <script>
-// ══════════════════════════
-//  CONFIGURACIÓN
-// ══════════════════════════
-const LOVE_DATE = new Date('2024-02-14T00:00:00');
-const LOVE_NAME = 'Para ti ♥';
-// ══════════════════════════
+// ═══════════════════════════════════════════
+//  CONFIGURACIÓN  ← cambia aquí
+// ═══════════════════════════════════════════
+const CFG = {
+  loveDate: new Date('2024-02-14T00:00:00'),
+  loveName: 'Para ti ♥',
+};
+// ═══════════════════════════════════════════
 
-const $ = id => document.getElementById(id);
-let timers = [];
-const sto  = (fn,ms) => { const t=setTimeout(fn,ms);  timers.push(t); return t; };
-const siv  = (fn,ms) => { const t=setInterval(fn,ms); timers.push(t); return t; };
+const SVGNS = 'http://www.w3.org/2000/svg';
+const el    = id => document.getElementById(id);
+
+/* ── utilidades ── */
 const wait = ms => new Promise(r => setTimeout(r, ms));
-const clearTimers = () => { timers.forEach(t=>{clearTimeout(t);clearInterval(t);}); timers=[]; };
-const clearLeaves = () => document.querySelectorAll('.fl').forEach(l=>l.remove());
+const rnd  = (a,b) => a + Math.random()*(b-a);
+const pick = arr => arr[Math.floor(Math.random()*arr.length)];
 
-const SVG_NS = 'http://www.w3.org/2000/svg';
+/* ── Gestor de timers ── */
+const T = {
+  _: [],
+  to(fn,ms) { const t=setTimeout(fn,ms);  this._.push({t,iv:0}); return t; },
+  iv(fn,ms) { const t=setInterval(fn,ms); this._.push({t,iv:1}); return t; },
+  clear() { this._.forEach(({t,iv}) => iv?clearInterval(t):clearTimeout(t)); this._=[]; },
+};
 
-// ══════════════════════════════════════════════════════════
-//  GENERACIÓN DE HOJAS A LO LARGO DE CADA RAMA
-// ══════════════════════════════════════════════════════════
+/* ── Hojas DOM (cayendo) ── */
+const Floaters = { clear() { document.querySelectorAll('.fl').forEach(x=>x.remove()); } };
 
-// Hoja-corazón path (relativa al origen del símbolo)
-const HEART_PATH = "M10 17C10 17 0.5 10.5 0.5 5.2C0.5 2.3 2.8 0 5.8 0C7.5 0 9 0.85 10 2.1C11 0.85 12.5 0 14.2 0C17.2 0 19.5 2.3 19.5 5.2C19.5 10.5 10 17 10 17Z";
-const COLORS = ['#6B0000','#8B1010','#B02020','#C83030','#E05050','#B82828'];
+// ═══════════════════════════════════════════
+//  HOJAS EN RAMAS (Bézier)
+// ═══════════════════════════════════════════
 
-function rnd(a,b){ return a + Math.random()*(b-a); }
-function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+const HEART  = "M10 17C10 17 0.5 10.5 0.5 5.2C0.5 2.3 2.8 0 5.8 0C7.5 0 9 0.85 10 2.1C11 0.85 12.5 0 14.2 0C17.2 0 19.5 2.3 19.5 5.2C19.5 10.5 10 17 10 17Z";
+const COLORS = ['#6B0000','#8B1010','#A82020','#C03030','#D84848','#B02020'];
 
-// Evalúa un punto a lo largo de una curva cúbica de Bézier (t 0..1)
-function bezier(p0,p1,p2,p3,t){
+/* Punto en curva cúbica de Bézier */
+function bez(p0,p1,p2,p3,t){
   const u=1-t;
-  return {
-    x: u*u*u*p0.x + 3*u*u*t*p1.x + 3*u*t*t*p2.x + t*t*t*p3.x,
-    y: u*u*u*p0.y + 3*u*u*t*p1.y + 3*u*t*t*p2.y + t*t*t*p3.y
-  };
+  return { x:u*u*u*p0.x+3*u*u*t*p1.x+3*u*t*t*p2.x+t*t*t*p3.x,
+           y:u*u*u*p0.y+3*u*u*t*p1.y+3*u*t*t*p2.y+t*t*t*p3.y };
 }
+/* Punto en segmento */
+function seg(p0,p1,t){ return { x:p0.x+(p1.x-p0.x)*t, y:p0.y+(p1.y-p0.y)*t }; }
 
-// Para líneas rectas (2 puntos) usa bezier degenerado
-function lerp2(p0,p3,t){
-  const p1={x:p0.x+(p3.x-p0.x)/3, y:p0.y+(p3.y-p0.y)/3};
-  const p2={x:p0.x+2*(p3.x-p0.x)/3, y:p0.y+2*(p3.y-p0.y)/3};
-  return bezier(p0,p1,p2,p3,t);
-}
-
-// Coloca n hojas a lo largo de un segmento dado por array de puntos (bezier cubico)
-// offset: desplazamiento perpendicular (-: izq, +: der), spread: variación
-function addLeavesAlongCurve(group, pts, count, sizeMin, sizeMax, perpSpread, side){
-  // pts = [p0,p1,p2,p3] para bezier, o [p0,p3] para línea
-  const isBez = pts.length===4;
-  for(let i=0;i<count;i++){
-    const t = rnd(0.05, 0.95);
-    const pt = isBez
-      ? bezier(pts[0],pts[1],pts[2],pts[3],t)
-      : lerp2(pts[0],pts[1],t);
-
-    // Derivada para obtener tangente
-    let dx,dy;
-    if(isBez){
-      const dt=0.01, t2=Math.min(t+dt,1);
-      const pt2=bezier(pts[0],pts[1],pts[2],pts[3],t2);
-      dx=pt2.x-pt.x; dy=pt2.y-pt.y;
-    } else {
-      dx=pts[1].x-pts[0].x; dy=pts[1].y-pts[0].y;
-    }
-    const len=Math.sqrt(dx*dx+dy*dy)||1;
-    // Normal perpendicular
-    const nx=-dy/len, ny=dx/len;
-
-    // Desplazamiento perpendicular con algo de ruido
-    const basePerp = side===0 ? (Math.random()<0.5?1:-1) : side;
-    const perp = basePerp * rnd(2, perpSpread);
-    const fx = pt.x + nx*perp + rnd(-3,3);
-    const fy = pt.y + ny*perp + rnd(-3,3);
-
-    const size = rnd(sizeMin, sizeMax);
-    const rot  = rnd(-35, 35) + (side < 0 ? rnd(-20,0) : rnd(0,20));
-    const color= pick(COLORS);
-    const opacity = rnd(0.82, 1);
-
-    const g = document.createElementNS(SVG_NS,'g');
-    // Centrar en (fx,fy) teniendo en cuenta el viewbox 0-20 x 0-18
+/*
+  Planta n hojas a lo largo de pts (bezier 4 pts, o segmento 2 pts).
+  sp: dispersión perpendicular. side: -1 izq | 1 der | 0 ambos.
+*/
+function plantLeaves(group, pts, n, szMin, szMax, sp, side=0){
+  const cubic = pts.length===4;
+  for(let i=0; i<n; i++){
+    const t  = rnd(0.06,0.94);
+    const pt = cubic ? bez(...pts,t) : seg(pts[0],pts[1],t);
+    // Tangente → normal
+    const dt  = 0.01, t2=Math.min(t+dt,1);
+    const pt2 = cubic ? bez(...pts,t2) : seg(pts[0],pts[1],t2);
+    const tx=pt2.x-pt.x, ty=pt2.y-pt.y, L=Math.hypot(tx,ty)||1;
+    const nx=-ty/L, ny=tx/L;
+    // Posición
+    const s  = side===0 ? (Math.random()<0.5?1:-1) : side;
+    const fx = pt.x + nx*s*rnd(3,sp) + rnd(-2,2);
+    const fy = pt.y + ny*s*rnd(3,sp) + rnd(-2,2);
+    // Tamaño y rotación
+    const sz  = rnd(szMin,szMax);
+    const rot = rnd(-40,40)+s*rnd(0,14);
+    // SVG element
+    const g = document.createElementNS(SVGNS,'g');
     g.setAttribute('transform',
-      `translate(${fx - size},${fy - size*0.88}) rotate(${rot},${size},${size*0.88})`);
-
-    const path = document.createElementNS(SVG_NS,'path');
-    path.setAttribute('d', HEART_PATH);
-    // Escalar de [0..20,0..18] → [0..size*2, 0..size*1.76]
-    const scaleX = size*2/20, scaleY = size*1.76/18;
-    path.setAttribute('transform',`scale(${scaleX},${scaleY})`);
-    path.setAttribute('fill', color);
-    path.setAttribute('opacity', String(opacity));
-
-    g.appendChild(path);
-    group.appendChild(g);
+      `translate(${fx-sz},${fy-sz*0.9}) rotate(${rot},${sz},${sz*0.9})`);
+    const p = document.createElementNS(SVGNS,'path');
+    p.setAttribute('d', HEART);
+    p.setAttribute('transform',`scale(${sz*2/20},${sz*1.8/18})`);
+    p.setAttribute('fill', pick(COLORS));
+    p.setAttribute('opacity', String(rnd(0.78,1)));
+    g.appendChild(p); group.appendChild(g);
   }
 }
 
-// ══ Define las ramas (sus puntos de control) ══
-// Para escena 3 (viewBox 440x740, origen tronco ~x=205,y=740)
+/*
+  Devuelve la lista de ramas para poblar de hojas.
+  ox/oy: offset de origen (para escena 4 cuyo viewBox es distinto).
+  Valores de n moderados → árbol frondoso pero no saturado.
+*/
+function makeBranches(ox=0, oy=0){
+  const p=(x,y)=>({x:x+ox,y:y+oy});
+  return [
+    // ── Nivel 1 izq ──
+    {pts:[p(207,585),p(175,558),p(138,535),p(58,492)],  n:12,szMin:8,szMax:19,sp:24,side:0},
+    {pts:[p(58,492), p(40,474), p(22,458), p(8,444)],   n:7, szMin:7,szMax:15,sp:18,side:-1},
+    {pts:[p(58,492), p(68,474), p(82,459), p(97,448)],  n:7, szMin:7,szMax:15,sp:18,side:1},
+    // ── Nivel 1 der ──
+    {pts:[p(211,573),p(242,552),p(278,534),p(354,487)], n:12,szMin:8,szMax:19,sp:24,side:0},
+    {pts:[p(354,487),p(369,470),p(384,455),p(400,442)], n:7, szMin:7,szMax:15,sp:18,side:1},
+    {pts:[p(354,487),p(341,469),p(326,455),p(312,444)], n:7, szMin:7,szMax:15,sp:18,side:-1},
+    // ── Nivel 2 izq ──
+    {pts:[p(205,497),p(178,474),p(148,455),p(52,409)],  n:10,szMin:7,szMax:17,sp:22,side:0},
+    {pts:[p(52,409), p(36,390), p(18,374), p(2,359)],   n:6, szMin:6,szMax:13,sp:16,side:-1},
+    {pts:[p(52,409), p(63,391), p(78,376), p(95,366)],  n:6, szMin:6,szMax:13,sp:16,side:1},
+    // ── Nivel 2 der ──
+    {pts:[p(209,486),p(232,465),p(258,448),p(348,403)], n:10,szMin:7,szMax:17,sp:22,side:0},
+    {pts:[p(348,403),p(362,385),p(378,370),p(396,355)], n:6, szMin:6,szMax:13,sp:16,side:1},
+    {pts:[p(348,403),p(336,386),p(320,371),p(302,361)], n:6, szMin:6,szMax:13,sp:16,side:-1},
+    // ── Nivel 3 izq ──
+    {pts:[p(202,413),p(178,388),p(150,368),p(50,319)],  n:9, szMin:6,szMax:15,sp:20,side:0},
+    {pts:[p(50,319), p(34,300), p(16,283), p(2,268)],   n:5, szMin:5,szMax:12,sp:14,side:-1},
+    {pts:[p(50,319), p(62,301), p(78,285), p(97,276)],  n:5, szMin:5,szMax:12,sp:14,side:1},
+    // ── Nivel 3 der ──
+    {pts:[p(207,402),p(229,380),p(254,360),p(343,309)], n:9, szMin:6,szMax:15,sp:20,side:0},
+    {pts:[p(343,309),p(357,292),p(372,276),p(390,261)], n:5, szMin:5,szMax:12,sp:14,side:1},
+    {pts:[p(343,309),p(330,292),p(314,277),p(296,267)], n:5, szMin:5,szMax:12,sp:14,side:-1},
+    // ── Centro vertical ──
+    {pts:[p(203,355),p(200,330),p(197,305),p(191,208)], n:9, szMin:6,szMax:16,sp:18,side:0},
+    // ── Cima ──
+    {pts:[p(191,208),p(182,180),p(172,152),p(159,86)],  n:10,szMin:6,szMax:16,sp:20,side:0},
+    {pts:[p(191,208),p(202,190),p(215,172),p(225,156)], n:5, szMin:5,szMax:12,sp:14,side:1},
+    {pts:[p(191,208),p(178,190),p(164,172),p(154,156)], n:5, szMin:5,szMax:12,sp:14,side:-1},
+    {pts:[p(159,86), p(153,68), p(148,50), p(146,32)],  n:7, szMin:5,szMax:13,sp:14,side:0},
+    {pts:[p(159,86), p(167,69), p(177,52), p(185,36)],  n:4, szMin:4,szMax:10,sp:11,side:1},
+    {pts:[p(159,86), p(150,69), p(139,52), p(129,36)],  n:4, szMin:4,szMax:10,sp:11,side:-1},
+    // ── Puntas extremas ──
+    {pts:[p(8,444),  p(-2,430)],  n:4,szMin:5,szMax:11,sp:11,side:0},
+    {pts:[p(97,448), p(108,435)], n:4,szMin:5,szMax:11,sp:11,side:0},
+    {pts:[p(400,442),p(412,429)], n:4,szMin:5,szMax:11,sp:11,side:0},
+    {pts:[p(312,444),p(300,431)], n:4,szMin:5,szMax:11,sp:11,side:0},
+    {pts:[p(2,359),  p(-8,344)],  n:3,szMin:4,szMax:10,sp:10,side:0},
+    {pts:[p(95,366), p(106,353)], n:3,szMin:4,szMax:10,sp:10,side:0},
+  ];
+}
 
-// Bezier 4 puntos: parseamos los "d" manualmente como puntos de control
-// Aquí definimos sólo los endpoints y aproximamos los controles
-// Formato: { pts:[p0,p1,p2,p3], count, sizeMin, sizeMax, spread, side }
-// side: -1=izq, 1=der, 0=ambos
+/*
+  Construye las hojas en el grupo SVG indicado.
+  ox/oy permiten ajustar coordenadas para el árbol de escena 4
+  (viewBox 320×720 vs 420×730 del árbol principal).
+*/
+function buildLeaves(groupId, ox=0, oy=0){
+  const g = el(groupId);
+  g.innerHTML = '';
+  makeBranches(ox, oy).forEach(b =>
+    plantLeaves(g, b.pts, b.n, b.szMin, b.szMax, b.sp, b.side)
+  );
+}
 
-const BRANCHES_S3 = [
-  // Ramas bajas izquierda (gruesas, más hojas)
-  {pts:[{x:210,y:590},{x:180,y:560},{x:140,y:540},{x:66,y:492}],   count:40, min:10,max:24, sp:30, side:0},
-  {pts:[{x:66,y:492}, {x:50,y:476},{x:32,y:460}, {x:16,y:444}],   count:22, min:9, max:20, sp:24, side:-1},
-  {pts:[{x:66,y:492}, {x:72,y:472},{x:90,y:456}, {x:106,y:444}],  count:22, min:9, max:20, sp:24, side:1},
-  // Ramas bajas derecha
-  {pts:[{x:214,y:578},{x:240,y:558},{x:280,y:540},{x:360,y:490}],  count:40, min:10,max:24, sp:30, side:0},
-  {pts:[{x:360,y:490},{x:376,y:474},{x:392,y:458},{x:408,y:444}],  count:22, min:9, max:20, sp:24, side:1},
-  {pts:[{x:360,y:490},{x:350,y:472},{x:336,y:456},{x:318,y:444}],  count:22, min:9, max:20, sp:24, side:-1},
-  // Ramas medias izquierda
-  {pts:[{x:208,y:500},{x:180,y:476},{x:150,y:456},{x:58,y:410}],   count:36, min:9, max:22, sp:28, side:0},
-  {pts:[{x:58,y:410}, {x:44,y:394},{x:28,y:378}, {x:8,y:360}],    count:20, min:8, max:18, sp:22, side:-1},
-  {pts:[{x:58,y:410}, {x:66,y:393},{x:82,y:377}, {x:100,y:366}],  count:20, min:8, max:18, sp:22, side:1},
-  // Ramas medias derecha
-  {pts:[{x:212,y:490},{x:238,y:468},{x:268,y:450},{x:352,y:404}],  count:36, min:9, max:22, sp:28, side:0},
-  {pts:[{x:352,y:404},{x:366,y:388},{x:382,y:372},{x:400,y:356}],  count:20, min:8, max:18, sp:22, side:1},
-  {pts:[{x:352,y:404},{x:342,y:388},{x:326,y:372},{x:308,y:360}],  count:20, min:8, max:18, sp:22, side:-1},
-  // Ramas altas izquierda
-  {pts:[{x:205,y:415},{x:178,y:390},{x:148,y:368},{x:54,y:320}],   count:32, min:8, max:20, sp:26, side:0},
-  {pts:[{x:54,y:320}, {x:38,y:304},{x:20,y:286}, {x:4,y:268}],    count:18, min:7, max:16, sp:20, side:-1},
-  {pts:[{x:54,y:320}, {x:66,y:303},{x:82,y:286}, {x:102,y:275}],  count:18, min:7, max:16, sp:20, side:1},
-  // Ramas altas derecha
-  {pts:[{x:210,y:404},{x:232,y:380},{x:258,y:358},{x:348,y:310}],  count:32, min:8, max:20, sp:26, side:0},
-  {pts:[{x:348,y:310},{x:362,y:294},{x:378,y:276},{x:398,y:258}],  count:18, min:7, max:16, sp:20, side:1},
-  {pts:[{x:348,y:310},{x:336,y:294},{x:320,y:278},{x:300,y:266}],  count:18, min:7, max:16, sp:20, side:-1},
-  // Centro vertical
-  {pts:[{x:206,y:360},{x:202,y:330},{x:198,y:294},{x:194,y:210}],  count:28, min:8, max:19, sp:22, side:0},
-  // Sub-altas izquierda
-  {pts:[{x:202,y:335},{x:176,y:308},{x:148,y:286},{x:50,y:238}],   count:28, min:7, max:17, sp:22, side:0},
-  {pts:[{x:50,y:238}, {x:36,y:222},{x:18,y:205}, {x:2,y:184}],    count:16, min:6, max:14, sp:18, side:-1},
-  {pts:[{x:50,y:238}, {x:64,y:222},{x:82,y:206}, {x:102,y:192}],  count:16, min:6, max:14, sp:18, side:1},
-  // Sub-altas derecha
-  {pts:[{x:208,y:324},{x:232,y:298},{x:256,y:276},{x:344,y:228}],  count:28, min:7, max:17, sp:22, side:0},
-  {pts:[{x:344,y:228},{x:358,y:212},{x:376,y:196},{x:394,y:174}],  count:16, min:6, max:14, sp:18, side:1},
-  {pts:[{x:344,y:228},{x:332,y:212},{x:316,y:196},{x:296,y:182}],  count:16, min:6, max:14, sp:18, side:-1},
-  // Cima
-  {pts:[{x:194,y:210},{x:182,y:180},{x:170,y:150},{x:162,y:88}],   count:30, min:8, max:19, sp:24, side:0},
-  {pts:[{x:194,y:210},{x:206,y:192},{x:218,y:175},{x:230,y:156}],  count:16, min:6, max:14, sp:18, side:1},
-  {pts:[{x:194,y:210},{x:182,y:192},{x:168,y:175},{x:154,y:156}],  count:16, min:6, max:14, sp:18, side:-1},
-  {pts:[{x:162,y:88}, {x:156,y:70},{x:150,y:52}, {x:148,y:34}],   count:18, min:6, max:16, sp:18, side:0},
-  {pts:[{x:162,y:88}, {x:170,y:70},{x:180,y:52}, {x:188,y:36}],   count:12, min:5, max:13, sp:14, side:1},
-  {pts:[{x:162,y:88}, {x:152,y:70},{x:140,y:52}, {x:130,y:36}],   count:12, min:5, max:13, sp:14, side:-1},
-  // Puntas extremas (rematar)
-  {pts:[{x:16,y:444}, {x:8,y:432}], count:10, min:6,max:14,sp:14,side:0},
-  {pts:[{x:106,y:444},{x:116,y:432}],count:10, min:6,max:14,sp:14,side:0},
-  {pts:[{x:8,y:360},  {x:0,y:348}], count:8,  min:5,max:12,sp:12,side:0},
-  {pts:[{x:100,y:366},{x:110,y:354}],count:8,  min:5,max:12,sp:12,side:0},
-  {pts:[{x:408,y:444},{x:418,y:432}],count:10, min:6,max:14,sp:14,side:0},
-  {pts:[{x:318,y:444},{x:308,y:432}],count:10, min:6,max:14,sp:14,side:0},
-  {pts:[{x:400,y:356},{x:410,y:344}],count:8,  min:5,max:12,sp:12,side:0},
-];
+// ═══════════════════════════════════════════
+//  HOJAS CAYENDO (funciona en cualquier escena)
+// ═══════════════════════════════════════════
 
-// Ramas escena 4 (viewBox 340x720, tronco ~x=163)
-const BRANCHES_S4 = [
-  {pts:[{x:163,y:582},{x:138,y:558},{x:108,y:538},{x:44,y:504}],  count:30,min:8,max:20,sp:24,side:0},
-  {pts:[{x:44,y:504}, {x:30,y:490},{x:14,y:476}, {x:2,y:462}],   count:16,min:7,max:16,sp:20,side:-1},
-  {pts:[{x:44,y:504}, {x:54,y:486},{x:68,y:472}, {x:86,y:462}],  count:16,min:7,max:16,sp:20,side:1},
-  {pts:[{x:166,y:570},{x:190,y:548},{x:218,y:530},{x:294,y:492}], count:30,min:8,max:20,sp:24,side:0},
-  {pts:[{x:294,y:492},{x:308,y:478},{x:322,y:464},{x:336,y:452}], count:16,min:7,max:16,sp:20,side:1},
-  {pts:[{x:161,y:495},{x:138,y:472},{x:110,y:452},{x:32,y:414}],  count:28,min:7,max:18,sp:22,side:0},
-  {pts:[{x:32,y:414}, {x:18,y:396},{x:4,y:380},  {x:-6,y:362}],  count:14,min:6,max:14,sp:18,side:-1},
-  {pts:[{x:164,y:484},{x:186,y:462},{x:208,y:444},{x:290,y:404}], count:28,min:7,max:18,sp:22,side:0},
-  {pts:[{x:290,y:404},{x:304,y:386},{x:318,y:370},{x:330,y:354}], count:14,min:6,max:14,sp:18,side:1},
-  {pts:[{x:158,y:408},{x:136,y:385},{x:108,y:363},{x:26,y:322}],  count:26,min:7,max:17,sp:20,side:0},
-  {pts:[{x:26,y:322}, {x:12,y:304},{x:-2,y:286}, {x:-12,y:268}], count:12,min:5,max:13,sp:16,side:-1},
-  {pts:[{x:162,y:397},{x:182,y:374},{x:204,y:353},{x:286,y:312}], count:26,min:7,max:17,sp:20,side:0},
-  {pts:[{x:286,y:312},{x:300,y:294},{x:318,y:277},{x:330,y:260}], count:12,min:5,max:13,sp:16,side:1},
-  {pts:[{x:155,y:326},{x:132,y:302},{x:104,y:278},{x:22,y:242}],  count:22,min:6,max:15,sp:18,side:0},
-  {pts:[{x:22,y:242}, {x:8,y:224},{x:-4,y:206},  {x:-12,y:188}], count:10,min:5,max:12,sp:14,side:-1},
-  {pts:[{x:159,y:316},{x:178,y:293},{x:198,y:271},{x:280,y:232}], count:22,min:6,max:15,sp:18,side:0},
-  {pts:[{x:280,y:232},{x:294,y:214},{x:308,y:196},{x:318,y:178}], count:10,min:5,max:12,sp:14,side:1},
-  {pts:[{x:155,y:212},{x:148,y:185},{x:140,y:155},{x:131,y:86}],  count:22,min:6,max:16,sp:18,side:0},
-  {pts:[{x:155,y:212},{x:164,y:194},{x:175,y:175},{x:183,y:158}], count:12,min:5,max:13,sp:14,side:1},
-  {pts:[{x:155,y:212},{x:144,y:194},{x:133,y:175},{x:123,y:158}], count:12,min:5,max:13,sp:14,side:-1},
-  {pts:[{x:131,y:86}, {x:126,y:68},{x:121,y:50}, {x:119,y:32}],  count:14,min:5,max:13,sp:14,side:0},
-  {pts:[{x:131,y:86}, {x:139,y:68},{x:148,y:50}, {x:154,y:34}],  count:10,min:4,max:11,sp:12,side:1},
-  {pts:[{x:131,y:86}, {x:122,y:68},{x:112,y:50}, {x:104,y:34}],  count:10,min:4,max:11,sp:12,side:-1},
-];
+let fallIv = null;
 
-function buildLeaves(group, branches){
-  group.innerHTML = '';
-  branches.forEach(b => {
-    addLeavesAlongCurve(group, b.pts, b.count, b.min, b.max, b.sp, b.side);
+function spawnLeaf(sourceEl){
+  if(!sourceEl) return;
+  const r = sourceEl.getBoundingClientRect();
+  if(r.width===0) return;
+
+  const sz    = rnd(11,25);
+  const color = pick(COLORS);
+  const ox    = r.left + r.width*0.05  + Math.random()*r.width*0.85;
+  const oy    = r.top  + r.height*0.03 + Math.random()*r.height*0.50;
+  const dy    = (window.innerHeight - oy) + 80;
+  const dx    = (Math.random()-0.5)*190;
+  const dr    = (Math.random()-0.5)*700;
+  const dur   = rnd(2.5,5.5);
+
+  const svg = document.createElementNS(SVGNS,'svg');
+  svg.setAttribute('viewBox','-1 -1 22 20');
+  svg.setAttribute('width',sz);
+  svg.setAttribute('height',sz*0.88);
+  svg.innerHTML=`<path d="${HEART}" fill="${color}" opacity="${rnd(0.72,1)}"/>`;
+  svg.className='fl';
+  svg.style.cssText=`left:${ox}px;top:${oy}px;--dx:${dx}px;--dy:${dy}px;--dr:${dr}deg;animation-duration:${dur}s;`;
+  document.body.appendChild(svg);
+  T.to(()=>svg.remove(), dur*1000+100);
+}
+
+function startFalling(sourceEl){
+  stopFalling();
+  fallIv = T.iv(()=>spawnLeaf(sourceEl), 400);
+}
+
+function stopFalling(){
+  if(fallIv){ clearInterval(fallIv); fallIv=null; }
+}
+
+// ═══════════════════════════════════════════
+//  CONTADOR
+// ═══════════════════════════════════════════
+
+function updateCounter(){
+  const s=Math.floor(Math.max(0,Date.now()-CFG.loveDate.getTime())/1000);
+  el('cs').textContent=String(s%60).padStart(2,'0');
+  el('cm').textContent=String(Math.floor(s/60)%60).padStart(2,'0');
+  el('ch').textContent=String(Math.floor(s/3600)%24).padStart(2,'0');
+  el('cd').textContent=Math.floor(s/86400);
+}
+function startCounter(){ updateCounter(); T.iv(updateCounter,1000); }
+
+// ═══════════════════════════════════════════
+//  ANIMACIÓN ÁRBOL
+// ═══════════════════════════════════════════
+
+function resetTree(){
+  document.querySelectorAll('#tree-svg .T, #tree-svg .B').forEach(e=>{
+    const m=(e.getAttribute('style')||'').match(/stroke-dasharray:(\d+)/);
+    if(m){ e.style.transition='none'; e.style.strokeDashoffset=m[1]; }
   });
+  const g=el('leaves-s3');
+  g.innerHTML=''; g.style.transition='none'; g.style.opacity='0';
 }
 
-// ══════════════════════════════════════════════════
-//  LÓGICA DE ESCENAS
-// ══════════════════════════════════════════════════
+async function growTree(){
+  // Pre-construye hojas (invisibles todavía)
+  buildLeaves('leaves-s3', 0, 0);
 
-function showScene(id){
-  ['s1','s2','s3','s4'].forEach(s=>{
-    const el=$(s);
-    el.classList.toggle('active', s===id);
+  // Tronco crece
+  document.querySelectorAll('#tree-svg .T').forEach(e=>{
+    e.style.transition='stroke-dashoffset 1.3s cubic-bezier(0.4,0,0.2,1)';
+    e.style.strokeDashoffset='0';
   });
-}
+  await wait(850);
 
-function init(){
-  clearTimers(); clearLeaves();
-
-  // Reset dash offsets
-  document.querySelectorAll('#tree-main .tp, #tree-main .br').forEach(el=>{
-    const m = (el.getAttribute('style')||'').match(/stroke-dasharray:(\d+)/);
-    if(m) el.style.strokeDashoffset = m[1];
-    el.style.transition = 'none';
-  });
-
-  // Limpiar hojas generadas
-  const lv = $('leaves'); if(lv) lv.innerHTML=''; lv && (lv.style.opacity='0');
-  $('tree-side').classList.remove('in');
-  $('counter-wrap').classList.remove('in');
-  $('restart').classList.remove('in');
-  $('heart-btn').style.animation = 'beat 1.5s ease-in-out infinite';
-  $('heart-btn').style.transform = '';
-
-  showScene('s1');
-}
-
-// ══ CAÍDA ══
-$('heart-btn').addEventListener('click', startFall);
-$('heart-btn').addEventListener('touchend', e=>{ e.preventDefault(); startFall(); });
-
-async function startFall(){
-  if(!$('s1').classList.contains('active')) return;
-  $('heart-btn').style.animation='none';
-  $('heart-btn').style.transform='scale(0.86)';
-  await wait(120);
-  showScene('s2');
-
-  const dh=$('drop-heart');
-  const vh=window.innerHeight;
-  const groundY=vh*0.72;
-  dh.style.cssText=`position:absolute;left:50%;top:${vh*0.3}px;transform:translateX(-50%);width:clamp(70px,20vw,100px);`;
-  await wait(60);
-  await dropAnim(dh, vh*0.3, groundY);
-  await impactFX(window.innerWidth/2, groundY);
-  await wait(300);
-  showScene('s3');
-  await wait(80);
-  await growTree();
-}
-
-function dropAnim(el, startY, endY){
-  return new Promise(resolve=>{
-    let t0=null; const dur=1500;
-    function tick(ts){
-      if(!t0) t0=ts;
-      const p=Math.min((ts-t0)/dur,1);
-      const ep=p*p*(3-2*p);
-      const sy=1-p*0.65, sx=1-p*0.78;
-      const rot=Math.sin(p*Math.PI*2)*8;
-      el.style.top=(startY+(endY-startY-50)*ep)+'px';
-      el.style.transform=`translateX(-50%) scaleX(${sx}) scaleY(${sy}) rotate(${rot}deg)`;
-      el.style.opacity=p>0.85?(1-(p-0.85)/0.15):1;
-      if(p<1) requestAnimationFrame(tick); else resolve();
-    }
-    requestAnimationFrame(tick);
-  });
-}
-
-async function impactFX(cx,cy){
-  $('drop-heart').style.opacity='0';
-  const g=$('ground');
-  g.style.opacity='1'; g.style.transform='scaleX(1)';
-  sto(()=>{ g.style.opacity='0'; },300);
-  const colors=['#6B0000','#B02020','#E05050','#F08080','#B02020'];
-  for(let i=0;i<16;i++){
-    const p=document.createElement('div');
-    const ang=(Math.PI*2/16)*i+(Math.random()-0.5)*0.4;
-    const d=45+Math.random()*65, s=5+Math.random()*9;
-    p.style.cssText=`position:fixed;left:${cx}px;top:${cy}px;z-index:10;width:${s}px;height:${s}px;border-radius:50%;background:${colors[i%5]};pointer-events:none;transition:transform 0.65s cubic-bezier(0.2,0.8,0.4,1),opacity 0.65s;`;
-    document.body.appendChild(p);
-    requestAnimationFrame(()=>{
-      p.style.transform=`translate(${Math.cos(ang)*d}px,${Math.sin(ang)*d}px) scale(0)`;
-      p.style.opacity='0';
-    });
-    sto(()=>p.remove(),750);
+  // Ramas en oleadas
+  const brs=[...document.querySelectorAll('#tree-svg .B')];
+  for(let i=0;i<brs.length;i++){
+    brs[i].style.transition=`stroke-dashoffset ${rnd(0.42,0.72)}s ease-out`;
+    brs[i].style.strokeDashoffset='0';
+    if(i%2===0) await wait(78);
   }
   await wait(200);
+
+  // Hojas aparecen
+  const lg=el('leaves-s3');
+  lg.style.transition='opacity 1.5s ease-out';
+  lg.style.opacity='1';
+  await wait(1100);
+
+  // ← Hojas empiezan a caer desde el árbol de escena 3
+  startFalling(el('tree-wrap'));
+  await wait(2400);
+
+  // Crossfade a escena 4
+  await toScene4();
 }
 
-// ══ ÁRBOL ══
-async function growTree(){
-  // Generar hojas antes de mostrarlas
-  buildLeaves($('leaves'), BRANCHES_S3);
+// ═══════════════════════════════════════════
+//  TRANSICIÓN S3 → S4
+// ═══════════════════════════════════════════
 
-  const trunks = document.querySelectorAll('#tree-main .tp');
-  trunks.forEach(el=>{
-    el.style.transition='stroke-dashoffset 1.3s cubic-bezier(0.4,0,0.2,1)';
-    el.style.strokeDashoffset='0';
-  });
-  await wait(900);
+async function toScene4(){
+  // Parar caída, limpiar hojas volando
+  stopFalling(); Floaters.clear();
 
-  const brs=Array.from(document.querySelectorAll('#tree-main .br'));
-  for(let i=0;i<brs.length;i++){
-    brs[i].style.transition=`stroke-dashoffset ${0.45+Math.random()*0.3}s ease-out`;
-    brs[i].style.strokeDashoffset='0';
-    if(i%2===0) await wait(85);
-  }
-  await wait(250);
+  const s3=el('s3'), s4=el('s4');
+  s4.classList.add('active'); s4.style.opacity='0';
 
-  // Hojas aparecen con fade suave
-  $('leaves').style.transition='opacity 1.6s ease-out';
-  $('leaves').style.opacity='1';
-  await wait(1800);
-
-  // Crossfade suave a escena 4 (sin meneo)
-  await crossFadeToS4();
-}
-
-async function crossFadeToS4(){
-  const s3=$('s3'), s4=$('s4');
-  s4.style.opacity='0';
-  s4.classList.add('active');
-  s4.style.opacity='0';
-
+  // Crossfade 1s
   const dur=1000, t0=performance.now();
-  await new Promise(resolve=>{
+  await new Promise(res=>{
     function tick(now){
       const p=Math.min((now-t0)/dur,1);
       const ep=p<0.5?2*p*p:-1+(4-2*p)*p;
       s3.style.opacity=String(1-ep);
       s4.style.opacity=String(ep);
-      if(p<1) requestAnimationFrame(tick); else resolve();
+      p<1?requestAnimationFrame(tick):res();
     }
     requestAnimationFrame(tick);
   });
   s3.classList.remove('active'); s3.style.opacity='';
   s4.style.opacity='';
 
-  // Árbol desliza
-  buildLeaves($('leaves4'), BRANCHES_S4);
-  await wait(80);
-  $('tree-side').classList.add('in');
-  $('love-name').textContent=LOVE_NAME;
+  // Árbol escena 4
+  // El viewBox de s4 es 320×720, el árbol tiene el tronco ~en x=155 vs x=200 del s3
+  // Ajustamos ox=-50 para que las hojas mapeen bien sobre las ramas reales de s4
+  buildLeaves('leaves-s4', -50, -10);
+  await wait(60);
+  el('tree-right').classList.add('in');
+  el('c-name').textContent=CFG.loveName;
 
-  await wait(600);
-  $('counter-wrap').classList.add('in');
+  // Contador
+  await wait(500);
+  el('counter').classList.add('in');
   startCounter();
 
-  await wait(1200);
-  startFallingLeaves();
+  // Hojas caen del árbol de escena 4
+  await wait(900);
+  startFalling(el('tree-right'));
 
+  // Restart
   await wait(800);
-  $('restart').classList.add('in');
+  el('restart').classList.add('in');
 }
 
-// ══ HOJAS CAYENDO ══
-const LC=['#6B0000','#8B1010','#B02020','#C83030','#E05050'];
+// ═══════════════════════════════════════════
+//  CAÍDA DEL CORAZÓN
+// ═══════════════════════════════════════════
 
-function spawnLeaf(){
-  const ts=$('tree-side');
-  if(!ts) return;
-  const r=ts.getBoundingClientRect();
-  if(r.width===0) return;
-
-  const size=12+Math.random()*22;
-  const color=LC[Math.floor(Math.random()*LC.length)];
-  const sx=r.left+r.width*0.05+Math.random()*r.width*0.85;
-  const sy=r.top+r.height*0.04+Math.random()*r.height*0.52;
-  const dy=(window.innerHeight-sy)+80;
-  const dx=(Math.random()-0.5)*180;
-  const dr=(Math.random()-0.5)*680;
-  const dur=2.2+Math.random()*3;
-
-  const svg=document.createElementNS(SVG_NS,'svg');
-  svg.setAttribute('viewBox','-1 -1 22 20');
-  svg.setAttribute('width',size);
-  svg.setAttribute('height',size*0.88);
-  svg.innerHTML=`<path d="M10 17C10 17 0.5 10.5 0.5 5.2C0.5 2.3 2.8 0 5.8 0C7.5 0 9 0.85 10 2.1C11 0.85 12.5 0 14.2 0C17.2 0 19.5 2.3 19.5 5.2C19.5 10.5 10 17 10 17Z" fill="${color}"/>`;
-  svg.className='fl';
-  svg.style.cssText=`left:${sx}px;top:${sy}px;--dx:${dx}px;--dy:${dy}px;--dr:${dr}deg;animation-duration:${dur}s;`;
-  document.body.appendChild(svg);
-  sto(()=>svg.remove(), dur*1000+100);
+async function dropAnim(elem, startY, endY){
+  return new Promise(res=>{
+    let t0=null; const dur=1500;
+    function tick(ts){
+      if(!t0)t0=ts;
+      const p=Math.min((ts-t0)/dur,1);
+      const ep=p*p*(3-2*p);
+      elem.style.top=(startY+(endY-startY-50)*ep)+'px';
+      elem.style.transform=`translateX(-50%) scaleX(${1-p*0.78}) scaleY(${1-p*0.65}) rotate(${Math.sin(p*Math.PI*2)*8}deg)`;
+      elem.style.opacity=p>0.85?(1-(p-0.85)/0.15):1;
+      p<1?requestAnimationFrame(tick):res();
+    }
+    requestAnimationFrame(tick);
+  });
 }
 
-function startFallingLeaves(){ siv(spawnLeaf,240); }
-
-// ══ CONTADOR ══
-function updateCounter(){
-  const s=Math.floor(Math.max(0,Date.now()-LOVE_DATE.getTime())/1000);
-  $('cs').textContent=String(s%60).padStart(2,'0');
-  $('cm').textContent=String(Math.floor(s/60)%60).padStart(2,'0');
-  $('ch').textContent=String(Math.floor(s/3600)%24).padStart(2,'0');
-  $('cd').textContent=Math.floor(s/86400);
+async function impactFX(cx,cy){
+  el('drop-heart').style.opacity='0';
+  const g=el('ground');
+  g.style.opacity='1'; g.style.transform='scaleX(1)';
+  T.to(()=>{ g.style.opacity='0'; },350);
+  const cols=['#6B0000','#B02020','#E05050','#F08080'];
+  for(let i=0;i<16;i++){
+    const d=document.createElement('div');
+    const ang=(Math.PI*2/16)*i+rnd(-0.3,0.3);
+    const dist=rnd(40,78), sz=rnd(5,12);
+    d.style.cssText=`position:fixed;left:${cx}px;top:${cy}px;z-index:10;
+      width:${sz}px;height:${sz}px;border-radius:50%;background:${pick(cols)};
+      pointer-events:none;
+      transition:transform .65s cubic-bezier(.2,.8,.4,1),opacity .65s;`;
+    document.body.appendChild(d);
+    requestAnimationFrame(()=>{
+      d.style.transform=`translate(${Math.cos(ang)*dist}px,${Math.sin(ang)*dist}px) scale(0)`;
+      d.style.opacity='0';
+    });
+    T.to(()=>d.remove(),800);
+  }
+  await wait(220);
 }
-function startCounter(){ updateCounter(); siv(updateCounter,1000); }
 
-init();
+async function startFall(){
+  if(!el('s1').classList.contains('active')) return;
+  el('heart-btn').style.animation='none';
+  el('heart-btn').style.transform='scale(0.86)';
+  await wait(120);
+
+  setScene('s2');
+
+  const dh=el('drop-heart'), vh=window.innerHeight, gY=vh*0.72;
+  dh.style.cssText=`position:absolute;left:50%;top:${vh*0.3}px;
+    transform:translateX(-50%);width:clamp(70px,20vw,100px);`;
+  await wait(60);
+  await dropAnim(dh, vh*0.3, gY);
+  await impactFX(window.innerWidth/2, gY);
+  await wait(260);
+
+  setScene('s3');
+  await wait(60);
+  await growTree();
+}
+
+/* Muestra solo la escena indicada */
+function setScene(id){
+  ['s1','s2','s3','s4'].forEach(s=>{
+    const e=el(s);
+    e.classList.toggle('active',s===id);
+    e.style.opacity='';
+  });
+}
+
+// ═══════════════════════════════════════════
+//  APP
+// ═══════════════════════════════════════════
+
+const App = {
+  init(){
+    T.clear(); Floaters.clear(); stopFalling();
+    resetTree();
+    el('tree-right').classList.remove('in');
+    el('counter').classList.remove('in');
+    el('restart').classList.remove('in');
+    el('leaves-s4').innerHTML='';
+    el('heart-btn').style.animation='beat 1.5s ease-in-out infinite';
+    el('heart-btn').style.transform='';
+    setScene('s1');
+  }
+};
+
+el('heart-btn').addEventListener('click',  startFall);
+el('heart-btn').addEventListener('touchend',e=>{e.preventDefault();startFall();});
+
+App.init();
 </script>
 </body>
 </html>
