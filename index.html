@@ -2,250 +2,882 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>San Valentín 💖</title>
-
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>San Valentín</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Dancing+Script:wght@600&display=swap" rel="stylesheet">
 <style>
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: "Segoe UI", sans-serif;
-}
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
-body {
-    background: linear-gradient(135deg, #ff4da6, #ff0066);
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
+  :root {
+    --red-deep: #8B0000;
+    --red-mid: #C0392B;
+    --red-light: #E57373;
+    --red-pale: #FFCDD2;
+    --bg: #FFF5F5;
+    --bark: #5D3A1A;
+    --bark-light: #8B5E3C;
+  }
 
-/* Tarjeta principal */
-.card {
-    background: #fff4e8;
-    width: 90%;
-    max-width: 600px;
-    border-radius: 25px;
-    padding: 25px;
-    box-shadow: 0 15px 40px rgba(0,0,0,0.2);
-    text-align: center;
-}
+  body {
+    background: var(--bg);
+    width: 100vw; height: 100vh;
+    overflow: hidden;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Playfair Display', serif;
+  }
 
-/* Árbol */
-.tree-container {
-    position: relative;
-    width: 100%;
-    height: 300px;
-    margin-bottom: 20px;
-}
+  /* ═══════════════════════════════ ESCENA 1: CORAZÓN ═══════════════════════════════ */
+  #scene1 {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 20px;
+  }
 
-/* Tronco */
-.trunk {
+  .hint-text {
+    font-family: 'Dancing Script', cursive;
+    font-size: 1.4rem;
+    color: var(--red-mid);
+    opacity: 0;
+    animation: fadeInHint 1s 0.8s forwards;
+    letter-spacing: 0.05em;
+  }
+
+  @keyframes fadeInHint {
+    to { opacity: 1; }
+  }
+
+  #heart-btn {
+    background: none; border: none; cursor: pointer;
+    padding: 0; outline: none;
+    filter: drop-shadow(0 8px 24px rgba(192,57,43,0.35));
+    transition: filter 0.2s;
+    animation: heartbeat 1.4s ease-in-out infinite;
+  }
+
+  #heart-btn:hover {
+    filter: drop-shadow(0 12px 32px rgba(192,57,43,0.55));
+    animation: none;
+    transform: scale(1.08);
+  }
+
+  @keyframes heartbeat {
+    0%, 100% { transform: scale(1); }
+    14% { transform: scale(1.1); }
+    28% { transform: scale(1); }
+    42% { transform: scale(1.07); }
+    70% { transform: scale(1); }
+  }
+
+  .click-ring {
     position: absolute;
-    bottom: 0;
-    left: 50%;
-    width: 25px;
-    height: 80px;
-    background: #8b4513;
-    transform: translateX(-50%);
-    border-radius: 5px;
-}
-
-/* Corazones */
-.heart {
-    position: absolute;
-    width: 18px;
-    height: 18px;
-    background: red;
-    transform: rotate(45deg);
-    animation: float 4s infinite ease-in-out;
-}
-
-.heart::before,
-.heart::after {
-    content: "";
-    position: absolute;
-    width: 18px;
-    height: 18px;
-    background: red;
+    width: 120px; height: 120px;
+    border: 3px solid var(--red-mid);
     border-radius: 50%;
-}
+    transform: scale(0); opacity: 0;
+    pointer-events: none;
+  }
 
-.heart::before {
-    top: -9px;
-    left: 0;
-}
+  /* ═══════════════════════════════ ESCENA 2: CAÍDA ═══════════════════════════════ */
+  #scene2 {
+    position: absolute; inset: 0;
+    display: none;
+    align-items: center; justify-content: center;
+  }
 
-.heart::after {
-    left: -9px;
-    top: 0;
-}
+  #falling-heart {
+    position: absolute;
+    top: 35%; left: 50%;
+    transform: translateX(-50%);
+    width: 90px; height: 90px;
+    will-change: transform, opacity;
+  }
 
-/* Animación */
-@keyframes float {
-    0% { transform: rotate(45deg) translateY(0); }
-    50% { transform: rotate(45deg) translateY(-8px); }
-    100% { transform: rotate(45deg) translateY(0); }
-}
+  #impact-wave {
+    position: absolute;
+    bottom: 28%; left: 50%;
+    transform: translateX(-50%) scaleX(0);
+    width: 80px; height: 18px;
+    background: radial-gradient(ellipse, rgba(192,57,43,0.35) 0%, transparent 70%);
+    border-radius: 50%;
+    opacity: 0;
+  }
 
-/* Texto */
-.text {
-    text-align: left;
-    margin-top: 15px;
-    line-height: 1.6;
-    color: #444;
-    font-size: 16px;
-}
+  #ground-line {
+    position: absolute;
+    bottom: 28%; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--red-pale), var(--red-mid), var(--red-pale), transparent);
+    opacity: 0;
+  }
 
-.text strong {
-    color: #e60073;
-}
+  /* ═══════════════════════════════ ESCENA 3: ÁRBOL ═══════════════════════════════ */
+  #scene3 {
+    position: absolute; inset: 0;
+    display: none;
+    align-items: flex-end; justify-content: center;
+  }
 
-/* Contador */
-.counter {
-    margin-top: 15px;
-    font-weight: bold;
-    color: #ff0066;
+  #tree-wrap {
+    position: relative;
+    width: 340px; height: 90vh;
+    display: flex; align-items: flex-end; justify-content: center;
+  }
+
+  #tree-svg {
+    width: 100%; height: 100%;
+    overflow: visible;
+  }
+
+  /* Ramas crecen con clip-path animado */
+  .trunk { stroke-dasharray: 600; stroke-dashoffset: 600; }
+  .branch { stroke-dasharray: 300; stroke-dashoffset: 300; }
+
+  /* ═══════════════════════════════ ESCENA 4: ÁRBOL DERECHA + CONTADOR ═══════════════════════════════ */
+  #scene4 {
+    position: absolute; inset: 0;
+    display: none;
+  }
+
+  #tree-right {
+    position: absolute;
+    right: -20px; bottom: 0;
+    width: 260px; height: 80vh;
+    transform: translateX(100%);
+    transition: transform 1.2s cubic-bezier(0.23, 1, 0.32, 1);
+  }
+
+  #tree-right.visible { transform: translateX(0); }
+
+  #counter-panel {
+    position: absolute;
+    left: 40px; top: 50%;
+    transform: translateY(-50%);
+    opacity: 0;
+    transition: opacity 1s 1.2s;
+  }
+
+  #counter-panel.visible { opacity: 1; }
+
+  .counter-label {
+    font-family: 'Dancing Script', cursive;
+    font-size: 1.2rem;
+    color: var(--red-mid);
+    margin-bottom: 8px;
+    display: block;
+  }
+
+  .counter-name {
+    font-family: 'Dancing Script', cursive;
+    font-size: 2.2rem;
+    color: var(--red-deep);
+    line-height: 1;
+    margin-bottom: 18px;
+    display: block;
+  }
+
+  .time-row {
+    display: flex; gap: 14px; flex-wrap: wrap;
+  }
+
+  .time-unit {
     text-align: center;
-}
+  }
 
-/* Responsive */
-@media(max-width:500px){
-    .text{
-        font-size:14px;
-    }
-}
+  .time-val {
+    display: block;
+    font-family: 'Playfair Display', serif;
+    font-size: 2.6rem;
+    font-weight: 700;
+    color: var(--red-deep);
+    line-height: 1;
+    min-width: 2.4ch;
+  }
+
+  .time-lbl {
+    font-family: 'Dancing Script', cursive;
+    font-size: 0.8rem;
+    color: var(--red-mid);
+    letter-spacing: 0.08em;
+    text-transform: lowercase;
+  }
+
+  /* ═══════════════════════════════ HOJAS CAYENDO ═══════════════════════════════ */
+  .leaf-fall {
+    position: fixed;
+    pointer-events: none;
+    will-change: transform, opacity;
+    animation: leafFall linear forwards;
+  }
+
+  @keyframes leafFall {
+    0% { transform: translateY(0) rotate(0deg) scale(1); opacity: 1; }
+    80% { opacity: 0.9; }
+    100% { transform: translateY(var(--fall-dist)) rotate(var(--fall-rot)) scale(0.7) translateX(var(--drift)); opacity: 0; }
+  }
+
+  /* ═══════════════════════════════ PARTÍCULAS IMPACTO ═══════════════════════════════ */
+  .particle {
+    position: absolute;
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--red-mid);
+    pointer-events: none;
+  }
+
+  /* ═══════════════════════════════ BG GRADIENT ═══════════════════════════════ */
+  .bg-gradient {
+    position: fixed; inset: 0; z-index: -1;
+    background: radial-gradient(ellipse at 30% 60%, #ffe0e3 0%, #fff5f5 60%, #ffeef0 100%);
+  }
+
+  /* ═══════════════════════════════ BOTÓN REINICIAR ═══════════════════════════════ */
+  #restart-btn {
+    position: fixed; bottom: 30px; right: 30px;
+    background: var(--red-mid); color: #fff;
+    border: none; border-radius: 50px;
+    padding: 10px 22px;
+    font-family: 'Dancing Script', cursive;
+    font-size: 1rem;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.5s, transform 0.2s;
+    z-index: 100;
+    box-shadow: 0 4px 16px rgba(192,57,43,0.3);
+  }
+
+  #restart-btn:hover { transform: scale(1.06); }
+  #restart-btn.visible { opacity: 1; }
 </style>
 </head>
-
 <body>
 
-<div class="card">
+<div class="bg-gradient"></div>
 
-    <!-- Árbol -->
-    <div class="tree-container" id="tree">
-
-        <div class="trunk"></div>
-
-    </div>
-
-    <!-- Texto -->
-    <div class="text">
-        <p><strong>Para el amor de mi vida:</strong></p>
-
-        <p>
-            Si pudiera elegir un lugar seguro, sería a tu lado.
-            Cuanto más tiempo estoy contigo.
-        </p>
-
-        <p id="startText"></p>
-    </div>
-
-    <!-- Contador -->
-    <div class="counter" id="counter"></div>
-
+<!-- ═══ ESCENA 1: CORAZÓN ═══ -->
+<div id="scene1">
+  <p class="hint-text">Presiona el corazón ♥</p>
+  <div style="position:relative; display:flex; align-items:center; justify-content:center;">
+    <div class="click-ring" id="ring1"></div>
+    <div class="click-ring" id="ring2" style="animation-delay:0.2s"></div>
+    <button id="heart-btn" aria-label="Corazón San Valentín">
+      <svg width="130" height="120" viewBox="0 0 130 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <radialGradient id="hg" cx="40%" cy="30%" r="70%">
+            <stop offset="0%" stop-color="#E74C3C"/>
+            <stop offset="60%" stop-color="#C0392B"/>
+            <stop offset="100%" stop-color="#8B0000"/>
+          </radialGradient>
+          <filter id="hglow">
+            <feGaussianBlur stdDeviation="4" result="blur"/>
+            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+        </defs>
+        <path d="M65 108 C65 108 8 70 8 36 C8 18 22 6 40 6 C50 6 60 12 65 20 C70 12 80 6 90 6 C108 6 122 18 122 36 C122 70 65 108 65 108Z"
+              fill="url(#hg)" filter="url(#hglow)"/>
+        <!-- Brillo -->
+        <ellipse cx="45" cy="32" rx="16" ry="10" fill="rgba(255,255,255,0.25)" transform="rotate(-25 45 32)"/>
+        <!-- Detalles líneas de destello -->
+        <line x1="20" y1="15" x2="28" y2="10" stroke="rgba(255,200,200,0.7)" stroke-width="2" stroke-linecap="round"/>
+        <line x1="15" y1="25" x2="10" y2="22" stroke="rgba(255,200,200,0.6)" stroke-width="1.5" stroke-linecap="round"/>
+        <line x1="22" y1="10" x2="18" y2="4" stroke="rgba(255,200,200,0.5)" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+    </button>
+  </div>
 </div>
 
+<!-- ═══ ESCENA 2: CAÍDA ═══ -->
+<div id="scene2">
+  <svg id="falling-heart" viewBox="0 0 130 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <radialGradient id="hg2" cx="40%" cy="30%" r="70%">
+        <stop offset="0%" stop-color="#E74C3C"/>
+        <stop offset="100%" stop-color="#8B0000"/>
+      </radialGradient>
+    </defs>
+    <path id="falling-path"
+      d="M65 108 C65 108 8 70 8 36 C8 18 22 6 40 6 C50 6 60 12 65 20 C70 12 80 6 90 6 C108 6 122 18 122 36 C122 70 65 108 65 108Z"
+      fill="url(#hg2)"/>
+    <ellipse cx="45" cy="32" rx="16" ry="10" fill="rgba(255,255,255,0.22)" transform="rotate(-25 45 32)"/>
+  </svg>
+  <div id="impact-wave"></div>
+  <div id="ground-line"></div>
+</div>
+
+<!-- ═══ ESCENA 3: ÁRBOL EMERGIENDO ═══ -->
+<div id="scene3">
+  <div id="tree-wrap">
+    <svg id="tree-svg" viewBox="0 0 340 700" xmlns="http://www.w3.org/2000/svg" overflow="visible">
+      <defs>
+        <radialGradient id="bg1" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="#A52A2A"/>
+          <stop offset="100%" stop-color="#5D3A1A"/>
+        </radialGradient>
+        <!-- Corazón símbolo para hojas -->
+        <symbol id="leaf-heart" viewBox="0 0 20 18">
+          <path d="M10 16 C10 16 1 10 1 5 C1 2.2 3.2 0 6 0 C7.6 0 9 0.9 10 2.1 C11 0.9 12.4 0 14 0 C16.8 0 19 2.2 19 5 C19 10 10 16 10 16Z"/>
+        </symbol>
+      </defs>
+
+      <!-- TRONCO (crece de abajo arriba) -->
+      <line class="trunk" id="trunk" x1="170" y1="700" x2="170" y2="400"
+        stroke="url(#bg1)" stroke-width="28" stroke-linecap="round"/>
+
+      <!-- RAMAS PRINCIPALES (8 ramas) -->
+      <!-- Izquierda abajo -->
+      <line class="branch" x1="170" y1="550" x2="80" y2="460"  stroke="#7B4A22" stroke-width="14" stroke-linecap="round"/>
+      <!-- Derecha abajo -->
+      <line class="branch" x1="170" y1="530" x2="265" y2="450" stroke="#7B4A22" stroke-width="14" stroke-linecap="round"/>
+      <!-- Izquierda media -->
+      <line class="branch" x1="170" y1="490" x2="70" y2="385"  stroke="#8B5E3C" stroke-width="11" stroke-linecap="round"/>
+      <!-- Derecha media -->
+      <line class="branch" x1="170" y1="475" x2="275" y2="380" stroke="#8B5E3C" stroke-width="11" stroke-linecap="round"/>
+      <!-- Izquierda arriba -->
+      <line class="branch" x1="170" y1="440" x2="95" y2="325"  stroke="#9B6E4C" stroke-width="8"  stroke-linecap="round"/>
+      <!-- Derecha arriba -->
+      <line class="branch" x1="170" y1="430" x2="248" y2="320" stroke="#9B6E4C" stroke-width="8"  stroke-linecap="round"/>
+      <!-- Centro izquierda alta -->
+      <line class="branch" x1="170" y1="410" x2="130" y2="280" stroke="#AB7E5C" stroke-width="6"  stroke-linecap="round"/>
+      <!-- Centro derecha alta -->
+      <line class="branch" x1="170" y1="400" x2="215" y2="280" stroke="#AB7E5C" stroke-width="6"  stroke-linecap="round"/>
+
+      <!-- Ramitas secundarias -->
+      <line class="branch" x1="80"  y1="460" x2="48"  y2="400" stroke="#9B6E4C" stroke-width="5" stroke-linecap="round"/>
+      <line class="branch" x1="80"  y1="460" x2="110" y2="405" stroke="#9B6E4C" stroke-width="5" stroke-linecap="round"/>
+      <line class="branch" x1="265" y1="450" x2="295" y2="398" stroke="#9B6E4C" stroke-width="5" stroke-linecap="round"/>
+      <line class="branch" x1="265" y1="450" x2="238" y2="400" stroke="#9B6E4C" stroke-width="5" stroke-linecap="round"/>
+      <line class="branch" x1="70"  y1="385" x2="38"  y2="330" stroke="#AB7E5C" stroke-width="4" stroke-linecap="round"/>
+      <line class="branch" x1="275" y1="380" x2="308" y2="325" stroke="#AB7E5C" stroke-width="4" stroke-linecap="round"/>
+      <line class="branch" x1="95"  y1="325" x2="65"  y2="270" stroke="#BB8E6C" stroke-width="3" stroke-linecap="round"/>
+      <line class="branch" x1="248" y1="320" x2="278" y2="268" stroke="#BB8E6C" stroke-width="3" stroke-linecap="round"/>
+      <line class="branch" x1="130" y1="280" x2="108" y2="230" stroke="#BB8E6C" stroke-width="3" stroke-linecap="round"/>
+      <line class="branch" x1="215" y1="280" x2="238" y2="228" stroke="#BB8E6C" stroke-width="3" stroke-linecap="round"/>
+      <line class="branch" x1="170" y1="400" x2="170" y2="260" stroke="#9B6E4C" stroke-width="6"  stroke-linecap="round"/>
+      <line class="branch" x1="170" y1="260" x2="155" y2="210" stroke="#BB8E6C" stroke-width="3" stroke-linecap="round"/>
+      <line class="branch" x1="170" y1="260" x2="188" y2="210" stroke="#BB8E6C" stroke-width="3" stroke-linecap="round"/>
+
+      <!-- HOJAS (corazones) - grupo oculto inicialmente -->
+      <g id="leaves-group" opacity="0">
+        <!-- Tonos: rojo oscuro #8B0000, rojo medio #C0392B, rojo claro #E57373 -->
+        <!-- Distribuidas por el árbol -->
+        <!-- Ramas bajas izquierda -->
+        <use href="#leaf-heart" x="34"  y="388" width="24" height="22" fill="#8B0000" transform="rotate(-15,46,399)"/>
+        <use href="#leaf-heart" x="52"  y="376" width="20" height="18" fill="#C0392B" transform="rotate(10,62,385)"/>
+        <use href="#leaf-heart" x="42"  y="402" width="18" height="16" fill="#E57373" transform="rotate(-5,51,410)"/>
+        <use href="#leaf-heart" x="95"  y="393" width="22" height="20" fill="#C0392B" transform="rotate(20,106,403)"/>
+        <use href="#leaf-heart" x="108" y="380" width="19" height="17" fill="#8B0000" transform="rotate(-10,117,388)"/>
+
+        <!-- Ramas bajas derecha -->
+        <use href="#leaf-heart" x="282" y="385" width="24" height="22" fill="#C0392B" transform="rotate(12,294,396)"/>
+        <use href="#leaf-heart" x="298" y="398" width="20" height="18" fill="#8B0000" transform="rotate(-8,308,407)"/>
+        <use href="#leaf-heart" x="270" y="373" width="18" height="16" fill="#E57373" transform="rotate(5,279,381)"/>
+        <use href="#leaf-heart" x="228" y="385" width="22" height="20" fill="#8B0000" transform="rotate(-18,239,395)"/>
+        <use href="#leaf-heart" x="240" y="370" width="20" height="18" fill="#C0392B" transform="rotate(15,250,379)"/>
+
+        <!-- Ramas medias izquierda -->
+        <use href="#leaf-heart" x="24"  y="318" width="26" height="24" fill="#C0392B" transform="rotate(-12,37,330)"/>
+        <use href="#leaf-heart" x="44"  y="305" width="22" height="20" fill="#8B0000" transform="rotate(8,55,315)"/>
+        <use href="#leaf-heart" x="36"  y="330" width="18" height="16" fill="#E57373" transform="rotate(-3,45,338)"/>
+        <use href="#leaf-heart" x="55"  y="340" width="20" height="18" fill="#C0392B" transform="rotate(22,65,349)"/>
+
+        <!-- Ramas medias derecha -->
+        <use href="#leaf-heart" x="292" y="312" width="26" height="24" fill="#8B0000" transform="rotate(10,305,324)"/>
+        <use href="#leaf-heart" x="308" y="298" width="22" height="20" fill="#E57373" transform="rotate(-14,319,308)"/>
+        <use href="#leaf-heart" x="278" y="330" width="20" height="18" fill="#C0392B" transform="rotate(6,288,339)"/>
+        <use href="#leaf-heart" x="262" y="345" width="18" height="16" fill="#8B0000" transform="rotate(-20,271,353)"/>
+
+        <!-- Ramas altas izquierda -->
+        <use href="#leaf-heart" x="50"  y="258" width="28" height="26" fill="#C0392B" transform="rotate(-8,64,271)"/>
+        <use href="#leaf-heart" x="68"  y="242" width="24" height="22" fill="#8B0000" transform="rotate(16,80,253)"/>
+        <use href="#leaf-heart" x="40"  y="272" width="20" height="18" fill="#E57373" transform="rotate(-20,50,281)"/>
+        <use href="#leaf-heart" x="80"  y="262" width="22" height="20" fill="#C0392B" transform="rotate(5,91,272)"/>
+
+        <!-- Ramas altas derecha -->
+        <use href="#leaf-heart" x="262" y="252" width="28" height="26" fill="#E57373" transform="rotate(12,276,265)"/>
+        <use href="#leaf-heart" x="246" y="268" width="24" height="22" fill="#C0392B" transform="rotate(-10,258,279)"/>
+        <use href="#leaf-heart" x="278" y="238" width="20" height="18" fill="#8B0000" transform="rotate(22,288,247)"/>
+        <use href="#leaf-heart" x="255" y="284" width="18" height="16" fill="#C0392B" transform="rotate(-5,264,292)"/>
+
+        <!-- Ramas superiores -->
+        <use href="#leaf-heart" x="92"  y="218" width="30" height="28" fill="#8B0000" transform="rotate(-14,107,232)"/>
+        <use href="#leaf-heart" x="112" y="206" width="26" height="24" fill="#E57373" transform="rotate(8,125,218)"/>
+        <use href="#leaf-heart" x="98"  y="234" width="22" height="20" fill="#C0392B" transform="rotate(-22,109,244)"/>
+
+        <use href="#leaf-heart" x="222" y="210" width="30" height="28" fill="#C0392B" transform="rotate(18,237,224)"/>
+        <use href="#leaf-heart" x="238" y="196" width="26" height="24" fill="#8B0000" transform="rotate(-6,251,208)"/>
+        <use href="#leaf-heart" x="210" y="226" width="22" height="20" fill="#E57373" transform="rotate(10,221,236)"/>
+
+        <!-- Centro arriba -->
+        <use href="#leaf-heart" x="140" y="196" width="32" height="30" fill="#C0392B" transform="rotate(-10,156,211)"/>
+        <use href="#leaf-heart" x="164" y="184" width="28" height="26" fill="#8B0000" transform="rotate(6,178,197)"/>
+        <use href="#leaf-heart" x="148" y="214" width="24" height="22" fill="#E57373" transform="rotate(-18,160,225)"/>
+        <use href="#leaf-heart" x="175" y="198" width="26" height="24" fill="#C0392B" transform="rotate(14,188,210)"/>
+        <use href="#leaf-heart" x="155" y="172" width="30" height="28" fill="#8B0000" transform="rotate(-4,170,186)"/>
+
+        <!-- Cima del árbol -->
+        <use href="#leaf-heart" x="145" y="148" width="34" height="32" fill="#C0392B" transform="rotate(-8,162,164)"/>
+        <use href="#leaf-heart" x="168" y="140" width="30" height="28" fill="#8B0000" transform="rotate(12,183,154)"/>
+        <use href="#leaf-heart" x="152" y="162" width="26" height="24" fill="#E57373" transform="rotate(-20,165,174)"/>
+        <use href="#leaf-heart" x="174" y="156" width="28" height="26" fill="#C0392B" transform="rotate(5,188,169)"/>
+        <use href="#leaf-heart" x="160" y="132" width="32" height="30" fill="#8B0000" transform="rotate(-14,176,147)"/>
+        <use href="#leaf-heart" x="138" y="168" width="24" height="22" fill="#E57373" transform="rotate(18,150,179)"/>
+        <use href="#leaf-heart" x="185" y="148" width="26" height="24" fill="#C0392B" transform="rotate(-6,198,160)"/>
+      </g>
+    </svg>
+  </div>
+</div>
+
+<!-- ═══ ESCENA 4: ÁRBOL DERECHA + CONTADOR ═══ -->
+<div id="scene4">
+  <!-- Mini árbol para escena 4 -->
+  <div id="tree-right">
+    <svg viewBox="0 0 260 600" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" overflow="visible">
+      <defs>
+        <symbol id="lh2" viewBox="0 0 20 18">
+          <path d="M10 16 C10 16 1 10 1 5 C1 2.2 3.2 0 6 0 C7.6 0 9 0.9 10 2.1 C11 0.9 12.4 0 14 0 C16.8 0 19 2.2 19 5 C19 10 10 16 10 16Z"/>
+        </symbol>
+      </defs>
+      <!-- Tronco -->
+      <line x1="130" y1="600" x2="130" y2="340" stroke="#5D3A1A" stroke-width="22" stroke-linecap="round"/>
+      <!-- Ramas -->
+      <line x1="130" y1="470" x2="60"  y2="390" stroke="#7B4A22" stroke-width="11" stroke-linecap="round"/>
+      <line x1="130" y1="450" x2="205" y2="380" stroke="#7B4A22" stroke-width="11" stroke-linecap="round"/>
+      <line x1="130" y1="420" x2="55"  y2="325" stroke="#8B5E3C" stroke-width="8"  stroke-linecap="round"/>
+      <line x1="130" y1="408" x2="210" y2="318" stroke="#8B5E3C" stroke-width="8"  stroke-linecap="round"/>
+      <line x1="130" y1="378" x2="80"  y2="278" stroke="#9B6E4C" stroke-width="5"  stroke-linecap="round"/>
+      <line x1="130" y1="368" x2="182" y2="270" stroke="#9B6E4C" stroke-width="5"  stroke-linecap="round"/>
+      <line x1="130" y1="340" x2="130" y2="210" stroke="#9B6E4C" stroke-width="5"  stroke-linecap="round"/>
+      <line x1="60"  y1="390" x2="35"  y2="340" stroke="#AB7E5C" stroke-width="4" stroke-linecap="round"/>
+      <line x1="205" y1="380" x2="228" y2="332" stroke="#AB7E5C" stroke-width="4" stroke-linecap="round"/>
+      <line x1="55"  y1="325" x2="30"  y2="278" stroke="#BB8E6C" stroke-width="3" stroke-linecap="round"/>
+      <line x1="210" y1="318" x2="236" y2="272" stroke="#BB8E6C" stroke-width="3" stroke-linecap="round"/>
+      <line x1="80"  y1="278" x2="62"  y2="230" stroke="#CB9E7C" stroke-width="2" stroke-linecap="round"/>
+      <line x1="182" y1="270" x2="200" y2="222" stroke="#CB9E7C" stroke-width="2" stroke-linecap="round"/>
+      <line x1="130" y1="210" x2="118" y2="170" stroke="#CB9E7C" stroke-width="2" stroke-linecap="round"/>
+      <line x1="130" y1="210" x2="144" y2="170" stroke="#CB9E7C" stroke-width="2" stroke-linecap="round"/>
+
+      <!-- Hojas estáticas en árbol escena 4 -->
+      <use href="#lh2" x="18"  y="328" width="22" height="20" fill="#8B0000"/>
+      <use href="#lh2" x="36"  y="316" width="20" height="18" fill="#C0392B"/>
+      <use href="#lh2" x="215" y="320" width="22" height="20" fill="#E57373"/>
+      <use href="#lh2" x="228" y="308" width="20" height="18" fill="#C0392B"/>
+      <use href="#lh2" x="12"  y="270" width="24" height="22" fill="#C0392B"/>
+      <use href="#lh2" x="30"  y="258" width="20" height="18" fill="#8B0000"/>
+      <use href="#lh2" x="224" y="264" width="24" height="22" fill="#8B0000"/>
+      <use href="#lh2" x="238" y="250" width="20" height="18" fill="#E57373"/>
+      <use href="#lh2" x="46"  y="218" width="26" height="24" fill="#E57373"/>
+      <use href="#lh2" x="64"  y="204" width="22" height="20" fill="#C0392B"/>
+      <use href="#lh2" x="186" y="208" width="26" height="24" fill="#8B0000"/>
+      <use href="#lh2" x="200" y="194" width="22" height="20" fill="#C0392B"/>
+      <use href="#lh2" x="104" y="158" width="28" height="26" fill="#C0392B"/>
+      <use href="#lh2" x="122" y="146" width="26" height="24" fill="#8B0000"/>
+      <use href="#lh2" x="140" y="154" width="24" height="22" fill="#E57373"/>
+      <use href="#lh2" x="112" y="170" width="22" height="20" fill="#C0392B"/>
+    </svg>
+  </div>
+
+  <!-- PANEL CONTADOR -->
+  <div id="counter-panel">
+    <span class="counter-label">Mi amor por ti comenzó hace...</span>
+    <span class="counter-name" id="love-name">Para ti ♥</span>
+    <div class="time-row">
+      <div class="time-unit">
+        <span class="time-val" id="cnt-days">---</span>
+        <span class="time-lbl">días</span>
+      </div>
+      <div class="time-unit">
+        <span class="time-val" id="cnt-hours">--</span>
+        <span class="time-lbl">horas</span>
+      </div>
+      <div class="time-unit">
+        <span class="time-val" id="cnt-mins">--</span>
+        <span class="time-lbl">minutos</span>
+      </div>
+      <div class="time-unit">
+        <span class="time-val" id="cnt-secs">--</span>
+        <span class="time-lbl">segundos</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- REINICIAR -->
+<button id="restart-btn" onclick="restart()">↺ Repetir</button>
+
 <script>
+// ═══════════════════════════════════════════════════════════════
+// CONFIGURACIÓN — cambia aquí la fecha de inicio y el nombre
+// ═══════════════════════════════════════════════════════════════
+const LOVE_START_DATE = new Date('2024-02-14T00:00:00');
+const LOVE_NAME = 'Para ti ♥';
+// ═══════════════════════════════════════════════════════════════
 
-/* ================================
-   FECHA DE INICIO (EDITA AQUÍ)
-   ================================ */
+const scene1 = document.getElementById('scene1');
+const scene2 = document.getElementById('scene2');
+const scene3 = document.getElementById('scene3');
+const scene4 = document.getElementById('scene4');
+const fallingHeart = document.getElementById('falling-heart');
+const fallingPath = document.getElementById('falling-path');
+const heartBtn = document.getElementById('heart-btn');
+const restartBtn = document.getElementById('restart-btn');
+const leavesGroup = document.getElementById('leaves-group');
 
-const startDate = new Date("2023-02-14 00:00:00"); 
-// Cambia la fecha por la tuya
+let fallLeafInterval = null;
+let counterInterval = null;
+let phase = 'scene1';
 
+// ─── Utilidades ───────────────────────────────────────────────
+const delay = ms => new Promise(r => setTimeout(r, ms));
 
-/* ================================
-   TEXTO DE FECHA
-   ================================ */
+function lerp(a, b, t) { return a + (b - a) * t; }
 
-document.getElementById("startText").innerHTML =
-"Mi amor por ti comenzó hace:";
-
-
-/* ================================
-   CONTADOR
-   ================================ */
-
-function updateCounter(){
-
-    const now = new Date();
-
-    let diff = now - startDate;
-
-    let seconds = Math.floor(diff / 1000);
-    let minutes = Math.floor(seconds / 60);
-    let hours   = Math.floor(minutes / 60);
-    let days    = Math.floor(hours / 24);
-
-    hours   = hours % 24;
-    minutes = minutes % 60;
-    seconds = seconds % 60;
-
-    document.getElementById("counter").innerHTML = 
-        days + " días " +
-        hours + " horas " +
-        minutes + " minutos " +
-        seconds + " segundos 💖";
+function animateVal(el, from, to, duration, fmt = v => Math.round(v)) {
+  const start = performance.now();
+  function tick(now) {
+    const t = Math.min((now - start) / duration, 1);
+    el.textContent = fmt(lerp(from, to, t));
+    if (t < 1) requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
 }
 
-setInterval(updateCounter,1000);
-updateCounter();
+// ─── ESCENA 1 → 2: Click en corazón ─────────────────────────
+heartBtn.addEventListener('click', () => {
+  if (phase !== 'scene1') return;
+  phase = 'falling';
+  startHeartFall();
+});
 
+async function startHeartFall() {
+  // Mostrar efecto de click en el botón
+  heartBtn.style.animation = 'none';
+  heartBtn.style.transform = 'scale(0.92)';
+  await delay(120);
 
-/* ================================
-   CREAR CORAZONES
-   ================================ */
+  // Transición a escena 2
+  scene1.style.transition = 'opacity 0.4s';
+  scene1.style.opacity = '0';
+  await delay(350);
+  scene1.style.display = 'none';
 
-const tree = document.getElementById("tree");
+  scene2.style.display = 'flex';
+  fallingHeart.style.cssText = `
+    position: absolute;
+    top: 30%; left: 50%;
+    transform: translateX(-50%);
+    width: 90px; height: 90px;
+    transition: none;
+  `;
 
-function createHeart(x,y,delay){
+  await delay(100);
 
-    const heart = document.createElement("div");
-    heart.classList.add("heart");
-
-    heart.style.left = x + "px";
-    heart.style.top  = y + "px";
-    heart.style.animationDelay = delay + "s";
-
-    const colors = ["#ff0040","#ff3366","#ff0055","#ff1a75"];
-    heart.style.background = colors[Math.floor(Math.random()*colors.length)];
-
-    heart.style.setProperty("--color",heart.style.background);
-
-    heart.style.setProperty("background",heart.style.background);
-
-    tree.appendChild(heart);
+  // FASE 1: el corazón se achica y se transforma en gota
+  // Animar morph de corazón a gota y caída
+  await animateHeartToDrop();
 }
 
-/* Forma de corazón */
-function generateHeart(){
+async function animateHeartToDrop() {
+  const groundY = window.innerHeight * 0.72;
+  let startTime = null;
+  const duration = 1600;
 
-    const centerX = tree.clientWidth / 2;
-    const centerY = 130;
+  // Partida: top 30%
+  const startTop = window.innerHeight * 0.30;
 
-    const scale = 10;
+  await new Promise(resolve => {
+    function tick(ts) {
+      if (!startTime) startTime = ts;
+      const t = Math.min((ts - startTime) / duration, 1);
+      const ease = t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t; // easeInOut
+      const dropEase = t * t * (3 - 2 * t); // smooth step para caída
 
-    let delay = 0;
+      // Posición
+      const currentTop = startTop + (groundY - startTop - 45) * dropEase;
+      // Escala: de 1 → 0.28 (se achica)
+      const scaleX = 1 - 0.72 * dropEase;
+      const scaleY = 1 - 0.62 * dropEase; // un poco más alto = forma de gota
+      // Rotación: da un giro leve
+      const rot = 12 * Math.sin(t * Math.PI);
 
-    for(let t=0; t<Math.PI*2; t+=0.15){
+      fallingHeart.style.top = currentTop + 'px';
+      fallingHeart.style.left = '50%';
+      fallingHeart.style.transform = `translateX(-50%) scaleX(${scaleX}) scaleY(${scaleY}) rotate(${rot}deg)`;
+      fallingHeart.style.opacity = t > 0.88 ? (1 - (t - 0.88) / 0.12) : 1;
 
-        const x = 16 * Math.pow(Math.sin(t),3);
-        const y = -(13*Math.cos(t) - 5*Math.cos(2*t) - 2*Math.cos(3*t) - Math.cos(4*t));
-
-        const finalX = centerX + x * scale;
-        const finalY = centerY + y * scale;
-
-        createHeart(finalX,finalY,delay);
-
-        delay += 0.1;
+      if (t < 1) {
+        requestAnimationFrame(tick);
+      } else {
+        resolve();
+      }
     }
+    requestAnimationFrame(tick);
+  });
+
+  // IMPACTO
+  await impact();
 }
 
-generateHeart();
+async function impact() {
+  fallingHeart.style.opacity = '0';
 
+  // Onda de impacto
+  const wave = document.getElementById('impact-wave');
+  const ground = document.getElementById('ground-line');
+  ground.style.opacity = '1';
+  wave.style.transition = 'transform 0.5s cubic-bezier(0.2,0.8,0.4,1), opacity 0.5s';
+  wave.style.opacity = '0.8';
+  wave.style.transform = 'translateX(-50%) scaleX(1)';
+  setTimeout(() => {
+    wave.style.transform = 'translateX(-50%) scaleX(3)';
+    wave.style.opacity = '0';
+  }, 50);
+
+  // Partículas de impacto
+  spawnImpactParticles();
+
+  await delay(600);
+
+  // Transición a escena 3
+  scene2.style.transition = 'opacity 0.5s';
+  scene2.style.opacity = '0';
+  await delay(450);
+  scene2.style.display = 'none';
+  await showTree();
+}
+
+function spawnImpactParticles() {
+  const cx = window.innerWidth / 2;
+  const cy = window.innerHeight * 0.72;
+  const colors = ['#8B0000','#C0392B','#E57373','#FFCDD2'];
+
+  for (let i = 0; i < 14; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    const angle = (Math.PI * 2 / 14) * i;
+    const dist = 40 + Math.random() * 60;
+    p.style.cssText = `
+      position: fixed;
+      left: ${cx}px; top: ${cy}px;
+      width: ${6 + Math.random() * 8}px;
+      height: ${6 + Math.random() * 8}px;
+      border-radius: 50%;
+      background: ${colors[i % colors.length]};
+      pointer-events: none;
+      z-index: 99;
+      transition: transform 0.7s cubic-bezier(0.2,0.8,0.4,1), opacity 0.7s;
+    `;
+    document.body.appendChild(p);
+    requestAnimationFrame(() => {
+      p.style.transform = `translate(${Math.cos(angle) * dist}px, ${Math.sin(angle) * dist}px) scale(0)`;
+      p.style.opacity = '0';
+    });
+    setTimeout(() => p.remove(), 800);
+  }
+}
+
+// ─── ESCENA 3: Árbol emergiendo ─────────────────────────────
+async function showTree() {
+  phase = 'tree';
+  scene3.style.display = 'flex';
+  scene3.style.opacity = '0';
+  scene3.style.transition = 'opacity 0.5s';
+
+  await delay(50);
+  scene3.style.opacity = '1';
+
+  // Animar tronco y ramas con stroke-dashoffset
+  const trunk = document.getElementById('trunk');
+  const branches = document.querySelectorAll('#tree-svg .branch');
+
+  trunk.style.transition = 'stroke-dashoffset 1.1s cubic-bezier(0.4,0,0.2,1)';
+  trunk.style.strokeDashoffset = '0';
+
+  await delay(700);
+
+  // Ramas en oleadas
+  const branchArr = Array.from(branches);
+  for (let i = 0; i < branchArr.length; i++) {
+    branchArr[i].style.transition = `stroke-dashoffset ${0.4 + Math.random() * 0.3}s ease-out`;
+    branchArr[i].style.strokeDashoffset = '0';
+    if (i % 3 === 0) await delay(120);
+  }
+
+  await delay(400);
+
+  // Hojas aparecen con fade y scale
+  leavesGroup.style.transition = 'opacity 1.2s ease-out';
+  leavesGroup.style.opacity = '1';
+
+  // Pequeño sacudido del árbol
+  await delay(800);
+  await shakeTree();
+
+  // Transición a escena 4
+  await delay(400);
+  await moveToScene4();
+}
+
+function shakeTree() {
+  return new Promise(resolve => {
+    const treeSvg = document.getElementById('tree-svg');
+    const keyframes = [
+      {transform: 'rotate(0deg)', offset: 0},
+      {transform: 'rotate(2deg)', offset: 0.2},
+      {transform: 'rotate(-2deg)', offset: 0.4},
+      {transform: 'rotate(1.5deg)', offset: 0.6},
+      {transform: 'rotate(-1deg)', offset: 0.8},
+      {transform: 'rotate(0deg)', offset: 1},
+    ];
+    const anim = treeSvg.animate(keyframes, {duration: 800, easing: 'ease-in-out'});
+    anim.onfinish = resolve;
+  });
+}
+
+// ─── ESCENA 4: árbol a la derecha + contador ─────────────────
+async function moveToScene4() {
+  scene4.style.display = 'block';
+  scene4.style.opacity = '0';
+  scene4.style.transition = 'opacity 0.6s';
+
+  scene3.style.transition = 'opacity 0.6s';
+  scene3.style.opacity = '0';
+
+  await delay(200);
+  scene4.style.opacity = '1';
+  await delay(400);
+  scene3.style.display = 'none';
+
+  // Árbol desliza desde la derecha
+  const treeRight = document.getElementById('tree-right');
+  await delay(50);
+  treeRight.classList.add('visible');
+
+  // Nombre
+  document.getElementById('love-name').textContent = LOVE_NAME;
+
+  // Panel contador
+  const counterPanel = document.getElementById('counter-panel');
+  await delay(300);
+  counterPanel.classList.add('visible');
+
+  // Iniciar hojas cayendo
+  await delay(800);
+  startFallingLeaves();
+
+  // Iniciar contador
+  startCounter();
+
+  // Mostrar botón reiniciar
+  await delay(1000);
+  restartBtn.classList.add('visible');
+
+  phase = 'done';
+}
+
+// ─── HOJAS CAYENDO ────────────────────────────────────────────
+const leafColors = ['#8B0000', '#C0392B', '#E57373', '#C0392B', '#8B0000'];
+
+function createFallingLeaf() {
+  const container = document.getElementById('tree-right');
+  const rect = container.getBoundingClientRect();
+
+  const leaf = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  const size = 14 + Math.random() * 16;
+  const color = leafColors[Math.floor(Math.random() * leafColors.length)];
+
+  // Posición: desde el árbol (derecha de la pantalla)
+  const startX = rect.left + Math.random() * rect.width * 0.8 + rect.width * 0.1;
+  const startY = rect.top + Math.random() * rect.height * 0.55 + rect.height * 0.1;
+  const fallDist = (window.innerHeight - startY) + 60;
+  const drift = (Math.random() - 0.5) * 180;
+  const rot = (Math.random() - 0.5) * 720;
+  const dur = 2.5 + Math.random() * 2.5;
+
+  leaf.setAttribute('viewBox', '0 0 20 18');
+  leaf.setAttribute('width', size);
+  leaf.setAttribute('height', size * 0.9);
+  leaf.innerHTML = `<path d="M10 16 C10 16 1 10 1 5 C1 2.2 3.2 0 6 0 C7.6 0 9 0.9 10 2.1 C11 0.9 12.4 0 14 0 C16.8 0 19 2.2 19 5 C19 10 10 16 10 16Z" fill="${color}"/>`;
+  leaf.style.cssText = `
+    position: fixed;
+    left: ${startX}px;
+    top: ${startY}px;
+    pointer-events: none;
+    z-index: 50;
+    --fall-dist: ${fallDist}px;
+    --fall-rot: ${rot}deg;
+    --drift: ${drift}px;
+    animation: leafFall ${dur}s ease-in forwards;
+    opacity: 0.95;
+  `;
+  document.body.appendChild(leaf);
+  setTimeout(() => leaf.remove(), dur * 1000 + 100);
+}
+
+function startFallingLeaves() {
+  fallLeafInterval = setInterval(createFallingLeaf, 280);
+}
+
+// ─── CONTADOR ────────────────────────────────────────────────
+function updateCounter() {
+  const now = new Date();
+  const diff = Math.max(0, now - LOVE_START_DATE);
+  const totalSecs = Math.floor(diff / 1000);
+  const secs  = totalSecs % 60;
+  const mins  = Math.floor(totalSecs / 60) % 60;
+  const hours = Math.floor(totalSecs / 3600) % 24;
+  const days  = Math.floor(totalSecs / 86400);
+
+  document.getElementById('cnt-days').textContent  = days;
+  document.getElementById('cnt-hours').textContent = String(hours).padStart(2,'0');
+  document.getElementById('cnt-mins').textContent  = String(mins).padStart(2,'0');
+  document.getElementById('cnt-secs').textContent  = String(secs).padStart(2,'0');
+}
+
+function startCounter() {
+  updateCounter();
+  counterInterval = setInterval(updateCounter, 1000);
+}
+
+// ─── REINICIAR ────────────────────────────────────────────────
+function restart() {
+  clearInterval(fallLeafInterval);
+  clearInterval(counterInterval);
+
+  // Limpiar hojas volando
+  document.querySelectorAll('.leaf-fall').forEach(l => l.remove());
+
+  phase = 'scene1';
+
+  // Reset estilos
+  scene1.style.display = 'flex';
+  scene1.style.opacity = '1';
+  scene2.style.display = 'none';
+  scene2.style.opacity = '1';
+  scene3.style.display = 'none';
+  scene3.style.opacity = '1';
+  scene4.style.display = 'none';
+  scene4.style.opacity = '1';
+
+  // Reset árbol SVG
+  const trunk = document.getElementById('trunk');
+  const branches = document.querySelectorAll('#tree-svg .branch');
+  trunk.style.transition = 'none';
+  trunk.style.strokeDashoffset = '600';
+  branches.forEach(b => {
+    b.style.transition = 'none';
+    b.style.strokeDashoffset = '300';
+  });
+  leavesGroup.style.transition = 'none';
+  leavesGroup.style.opacity = '0';
+
+  // Reset escena 4
+  document.getElementById('tree-right').classList.remove('visible');
+  document.getElementById('counter-panel').classList.remove('visible');
+
+  restartBtn.classList.remove('visible');
+  heartBtn.style.animation = 'heartbeat 1.4s ease-in-out infinite';
+  heartBtn.style.transform = '';
+}
 </script>
-
 </body>
 </html>
